@@ -1,13 +1,16 @@
 import plugin from "tailwindcss/plugin";
 
-const correctedRadius = (value: string) =>
+type PluginWithConfig = ReturnType<typeof plugin>;
+
+const correctedRadius = (value: string): string =>
   `calc(${value} * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5)))))`;
 
 const cornerShape = "superellipse(var(--squircle-amt, 1.5))";
 
 const supportsCornerShape = "@supports (corner-shape: superellipse())";
 
-export default plugin(function ({ matchUtilities, theme }) {
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme }) => {
   const radiusValues = theme("borderRadius");
 
   // squircle-amt-* — sets exponent + corner-shape
@@ -259,4 +262,7 @@ export default plugin(function ({ matchUtilities, theme }) {
     },
     { type: "length", values: radiusValues },
   );
-});
+};
+
+const squircle: PluginWithConfig = plugin(squirclePlugin);
+export default squircle;

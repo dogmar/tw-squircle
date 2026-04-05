@@ -1,49 +1,40 @@
 {
   "name": "@klinking/tw-squircle",
   "version": "0.1.0",
-  "type": "module",
   "description": "Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius correction",
-  "license": "MIT",
-  "exports": {
-    "./squircle.css": "./dist/squircle.css",
-    "./merge": {
-      "types": "./dist/merge.d.ts",
-      "import": "./dist/merge.js"
-    },
-    "./plugin": {
-      "types": "./dist/plugin.d.ts",
-      "import": "./dist/plugin.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "peerDependencies": {
-    "tailwind-merge": ">=2.0.0",
-    "tailwindcss": ">=4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "tailwind-merge": {
-      "optional": true
-    }
-  },
   "keywords": [
-    "tailwindcss",
-    "squircle",
-    "superellipse",
     "border-radius",
     "corner-shape",
-    "tailwind-plugin"
+    "squircle",
+    "superellipse",
+    "tailwind-plugin",
+    "tailwindcss"
   ],
+  "homepage": "https://dogmar.github.io/tw-squircle",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/dogmar/tw-squircle"
   },
-  "homepage": "https://dogmar.github.io/tw-squircle",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    "./squircle.css": "./dist/squircle.css",
+    "./merge": {
+      "types": "./dist/merge.d.mts",
+      "import": "./dist/merge.mjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.mts",
+      "import": "./dist/plugin.mjs"
+    }
+  },
   "scripts": {
-    "dev": "vite --root docs",
+    "dev": "vite docs",
     "build": "vp pack && cp src/squircle.css dist/squircle.css",
-    "build:site": "vite build --root docs",
+    "build:site": "vite build docs",
     "prepare": "vp config",
     "lint": "vp lint",
     "lint:fix": "vp lint --fix",
@@ -54,6 +45,18 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
-    "oxlint": "^1.58.0"
+    "oxlint": "^1.58.0",
+    "typescript": "^6.0.2",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "tailwind-merge": ">=2.0.0",
+    "tailwindcss": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwind-merge": {
+      "optional": true
+    }
   }
 }
