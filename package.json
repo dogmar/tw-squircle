@@ -5,14 +5,18 @@
   "description": "Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius correction",
   "license": "MIT",
   "exports": {
-    "./squircle.css": "./squircle.css",
-    "./merge": "./merge.js",
-    "./plugin": "./plugin.js"
+    "./squircle.css": "./dist/squircle.css",
+    "./merge": {
+      "types": "./dist/merge.d.ts",
+      "import": "./dist/merge.js"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
+    }
   },
   "files": [
-    "squircle.css",
-    "merge.js",
-    "plugin.js"
+    "dist"
   ],
   "peerDependencies": {
     "tailwind-merge": ">=2.0.0",
@@ -37,9 +41,19 @@
   },
   "homepage": "https://dogmar.github.io/tw-squircle",
   "scripts": {
-    "dev": "node scripts/serve.mjs"
+    "dev": "vite --root docs",
+    "build": "vp pack && cp src/squircle.css dist/squircle.css",
+    "build:site": "vite build --root docs",
+    "prepare": "vp config",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "fmt": "vp fmt",
+    "fmt:check": "vp fmt --check",
+    "sync-readme": "./scripts/sync-readme.sh",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.2.2"
+    "@tailwindcss/vite": "^4.2.2",
+    "oxlint": "^1.58.0"
   }
 }
