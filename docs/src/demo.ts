@@ -110,12 +110,9 @@ const sDotRight = makeDot("#6366f1");
 const corrDotTop = makeDot("#10b981");
 const corrDotRight = makeDot("#10b981");
 
-
 function arcToSvg(mathX: number, mathY: number, arcR: number): { x: number; y: number } {
   return { x: cornerX - arcR + mathX, y: cornerY + arcR - mathY };
 }
-
-
 
 function updateMathSvg(r: number, cssN: number, mathN: number): void {
   const maxR = BOX;
@@ -124,37 +121,52 @@ function updateMathSvg(r: number, cssN: number, mathN: number): void {
 
   // Circle
   const cArc = circleArcPoints(clampedR).map((p) => arcToSvg(p.x, p.y, clampedR));
-  circlePath.setAttribute("d",
+  circlePath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${cArc[0]!.x} ${cArc[0]!.y} ` +
-    pointsToPath(cArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(cArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Superellipse at same radius
   const sArc = superellipsePoints(clampedR, mathN).map((p) => arcToSvg(p.x, p.y, clampedR));
-  superPath.setAttribute("d",
+  superPath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${sArc[0]!.x} ${sArc[0]!.y} ` +
-    pointsToPath(sArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(sArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Corrected superellipse
   const corrArc = superellipsePoints(corrR, mathN).map((p) => arcToSvg(p.x, p.y, corrR));
-  corrPath.setAttribute("d",
+  corrPath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${corrArc[0]!.x} ${corrArc[0]!.y} ` +
-    pointsToPath(corrArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(corrArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Junction dots
-  const cFirst = cArc[0]!, cLast = cArc[cArc.length - 1]!;
-  cDotRight.setAttribute("cx", String(cFirst.x)); cDotRight.setAttribute("cy", String(cFirst.y));
-  cDotTop.setAttribute("cx", String(cLast.x));    cDotTop.setAttribute("cy", String(cLast.y));
+  const cFirst = cArc[0]!,
+    cLast = cArc[cArc.length - 1]!;
+  cDotRight.setAttribute("cx", String(cFirst.x));
+  cDotRight.setAttribute("cy", String(cFirst.y));
+  cDotTop.setAttribute("cx", String(cLast.x));
+  cDotTop.setAttribute("cy", String(cLast.y));
 
-  const sFirst = sArc[0]!, sLast = sArc[sArc.length - 1]!;
-  sDotRight.setAttribute("cx", String(sFirst.x)); sDotRight.setAttribute("cy", String(sFirst.y));
-  sDotTop.setAttribute("cx", String(sLast.x));    sDotTop.setAttribute("cy", String(sLast.y));
+  const sFirst = sArc[0]!,
+    sLast = sArc[sArc.length - 1]!;
+  sDotRight.setAttribute("cx", String(sFirst.x));
+  sDotRight.setAttribute("cy", String(sFirst.y));
+  sDotTop.setAttribute("cx", String(sLast.x));
+  sDotTop.setAttribute("cy", String(sLast.y));
 
-  const corrFirst = corrArc[0]!, corrLast = corrArc[corrArc.length - 1]!;
-  corrDotRight.setAttribute("cx", String(corrFirst.x)); corrDotRight.setAttribute("cy", String(corrFirst.y));
-  corrDotTop.setAttribute("cx", String(corrLast.x));    corrDotTop.setAttribute("cy", String(corrLast.y));
+  const corrFirst = corrArc[0]!,
+    corrLast = corrArc[corrArc.length - 1]!;
+  corrDotRight.setAttribute("cx", String(corrFirst.x));
+  corrDotRight.setAttribute("cy", String(corrFirst.y));
+  corrDotTop.setAttribute("cx", String(corrLast.x));
+  corrDotTop.setAttribute("cy", String(corrLast.y));
 
   // Readouts
   document.getElementById("formula-n")!.textContent = mathN.toFixed(1);

@@ -8,11 +8,7 @@
  * @param n — mathematical exponent (n=2 is circle). CSS `superellipse(K)`
  *   maps to math exponent n = 2^K, so pass `Math.pow(2, K)` here.
  */
-export function superellipsePoints(
-  r: number,
-  n: number,
-  numPoints: number = 100
-): Point[] {
+export function superellipsePoints(r: number, n: number, numPoints: number = 100): Point[] {
   const points: Point[] = [];
   for (let i = 0; i <= numPoints; i++) {
     const t = (i / numPoints) * (Math.PI / 2);
@@ -41,7 +37,7 @@ export function circleArcPoints(r: number, numPoints: number = 100): Point[] {
  * @param n — mathematical exponent (n=2 is circle)
  */
 export function correctedRadius(r: number, n: number): number {
-  return r * (1 - Math.pow(2, -0.5)) / (1 - Math.pow(2, -1 / n));
+  return (r * (1 - Math.pow(2, -0.5))) / (1 - Math.pow(2, -1 / n));
 }
 
 /**
@@ -80,11 +76,7 @@ function bevelDepth(r: number, n: number): number {
  * @param arcR — the curve's specified radius (axis extent)
  * @param n — mathematical exponent (n=2 is circle)
  */
-export function perceivedRadius(
-  centerR: number,
-  arcR: number,
-  n: number
-): number {
+export function perceivedRadius(centerR: number, arcR: number, n: number): number {
   const apexFromCorner = arcR * (1 - Math.pow(2, -1 / n));
   return Math.SQRT2 * (centerR - apexFromCorner);
 }

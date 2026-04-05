@@ -40,9 +40,7 @@ export const squircleMergeConfig = {
     },
     conflictingClassGroups: {
       squircle: [...allRoundedGroups, "squircle-amt"],
-      ...Object.fromEntries(
-        allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]]),
-      ),
+      ...Object.fromEntries(allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]])),
     },
   },
 } as const;

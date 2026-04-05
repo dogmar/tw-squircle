@@ -46,21 +46,25 @@ tw-squircle/
 Vite Plus uses `pack` (tsdown-based bundler) for npm package builds, not Vite library mode. The existing `staged`, `fmt`, and `lint` config sections are preserved.
 
 **`pack`** (npm package build via `vp pack`):
+
 - Entry points: `src/plugin.ts`, `src/merge.ts`
 - Output to `dist/` with ESM format
 - `dts: true` for `.d.ts` declaration generation (built into tsdown, no plugin needed)
 - Copy `src/squircle.css` to `dist/squircle.css` via `onSuccess` hook or build script
 
 **`vite build --root docs`** (demo site build):
+
 - Root: `docs/`
 - `@tailwindcss/vite` plugin added to the `plugins` array in `vite.config.ts`
 - Output to a temporary build directory (consumed by CI deploy action)
 
 **`vite --root docs`** (dev server):
+
 - Serves the demo site from `docs/` with HMR
 - Vite + `@tailwindcss/vite` handles Tailwind compilation on the fly
 
 **Preserved existing config**:
+
 - `staged: { "*": "vp check --fix" }` (pre-commit hooks)
 - `fmt` config with `sortTailwindcss` (stylesheet path stays `./docs/styles.css`)
 - `lint` config with `typeAware: true`, `typeCheck: true`
@@ -113,6 +117,7 @@ Extends root config for the demo files. Fields inherited from root that don't ap
 ### package.json Updates
 
 **Exports** with `types` conditions for TypeScript consumers:
+
 ```json
 "exports": {
   "./squircle.css": "./dist/squircle.css",
@@ -129,6 +134,7 @@ Extends root config for the demo files. Fields inherited from root that don't ap
 ```
 
 **Scripts** (using `vp` commands to preserve vite-plus config integration):
+
 ```json
 "scripts": {
   "dev": "vite --root docs",

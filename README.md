@@ -75,6 +75,7 @@ If you'd rather not add a dependency, copy the source directly:
 ### squircle.css
 
 <!-- BEGIN:src/squircle.css -->
+
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 1.5)  */
@@ -91,7 +92,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-radius: var(--squircle-r);
     corner-shape: superellipse(var(--squircle-amt, 1.5));
@@ -105,7 +107,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-top-right-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-top-left-radius: var(--squircle-r);
     border-top-right-radius: var(--squircle-r);
@@ -118,7 +121,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-bottom-right-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-top-right-radius: var(--squircle-r);
     border-bottom-right-radius: var(--squircle-r);
@@ -131,7 +135,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-bottom-right-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-bottom-left-radius: var(--squircle-r);
     border-bottom-right-radius: var(--squircle-r);
@@ -144,7 +149,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-bottom-left-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-top-left-radius: var(--squircle-r);
     border-bottom-left-radius: var(--squircle-r);
@@ -159,7 +165,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-end-start-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-start-start-radius: var(--squircle-r);
     border-end-start-radius: var(--squircle-r);
@@ -172,7 +179,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-end-end-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     --squircle-r: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     border-start-end-radius: var(--squircle-r);
     border-end-end-radius: var(--squircle-r);
@@ -186,7 +194,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-top-left-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-top-left-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -196,7 +205,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-top-right-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-top-right-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -206,7 +216,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-bottom-right-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-bottom-right-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -216,7 +227,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-bottom-left-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-bottom-left-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -228,7 +240,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-start-start-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-start-start-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -238,7 +251,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-start-end-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-start-end-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -248,7 +262,8 @@ If you'd rather not add a dependency, copy the source directly:
   border-end-start-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-end-start-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
@@ -258,17 +273,20 @@ If you'd rather not add a dependency, copy the source directly:
   border-end-end-radius: --value(--radius-*);
   @supports (corner-shape: superellipse()) {
     border-end-end-radius: calc(
-      --value(--radius-*) * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
+      --value(--radius- *) * (1 - pow(2, -0.5)) /
+        (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5))))
     );
     corner-shape: superellipse(var(--squircle-amt, 1.5));
   }
 }
 ```
+
 <!-- END:src/squircle.css -->
 
 ### plugin.js
 
 <!-- BEGIN:src/plugin.ts -->
+
 ```ts
 import plugin from "tailwindcss/plugin";
 
@@ -539,11 +557,13 @@ const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme })
 const squircle: PluginWithConfig = plugin(squirclePlugin);
 export default squircle;
 ```
+
 <!-- END:src/plugin.ts -->
 
 ### merge.js
 
 <!-- BEGIN:src/merge.ts -->
+
 ```ts
 const allRoundedGroups: string[] = [
   "rounded",
@@ -587,13 +607,12 @@ export const squircleMergeConfig = {
     },
     conflictingClassGroups: {
       squircle: [...allRoundedGroups, "squircle-amt"],
-      ...Object.fromEntries(
-        allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]]),
-      ),
+      ...Object.fromEntries(allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]])),
     },
   },
 } as const;
 ```
+
 <!-- END:src/merge.ts -->
 
 ## Browser Support

@@ -15,6 +15,7 @@
 ### Task 1: Project scaffolding — tsconfigs, .gitignore, directory structure
 
 **Files:**
+
 - Create: `tsconfig.json`
 - Create: `tsconfig.docs.json`
 - Create: `src/` (directory)
@@ -30,6 +31,7 @@ mkdir -p src docs/src
 - [ ] **Step 2: Add `dist/` to `.gitignore`**
 
 `.gitignore` should become:
+
 ```
 node_modules/
 dist/
@@ -90,6 +92,7 @@ git commit -m "chore: add tsconfigs and update gitignore for migration"
 This is the pure math library with no DOM dependencies — easiest to convert first. Other files depend on it.
 
 **Files:**
+
 - Create: `docs/src/math.ts`
 - Delete: `docs/math.mjs`
 
@@ -140,7 +143,7 @@ export function circleArcPoints(r: number, numPoints = 100): Point[] {
  * Analytically derived so perceived radius exactly matches a circle.
  */
 export function correctedRadius(r: number, n: number): number {
-  return r * (1 - Math.pow(2, -0.5)) / (1 - Math.pow(2, -1 / n));
+  return (r * (1 - Math.pow(2, -0.5))) / (1 - Math.pow(2, -1 / n));
 }
 
 /**
@@ -200,12 +203,14 @@ git commit -m "refactor: convert math.mjs to TypeScript"
 ### Task 3: Move and convert `docs/demo.mjs` → `docs/src/demo.ts`
 
 **Files:**
+
 - Create: `docs/src/demo.ts`
 - Delete: `docs/demo.mjs`
 
 - [ ] **Step 1: Create `docs/src/demo.ts`**
 
 Key TypeScript changes:
+
 - Import from `./math.ts` (Vite resolves `.ts` imports)
 - All `document.getElementById()` calls return `HTMLElement | null` — use non-null assertions (`!`) since these are known IDs in `index.html`
 - Cast slider inputs to `HTMLInputElement` for `.value` access
@@ -335,37 +340,52 @@ function updateMathSvg(r: number, _cssN: number, mathN: number): void {
 
   // Circle
   const cArc = circleArcPoints(clampedR).map((p) => arcToSvg(p.x, p.y, clampedR));
-  circlePath.setAttribute("d",
+  circlePath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${cArc[0]!.x} ${cArc[0]!.y} ` +
-    pointsToPath(cArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(cArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Superellipse at same radius
   const sArc = superellipsePoints(clampedR, mathN).map((p) => arcToSvg(p.x, p.y, clampedR));
-  superPath.setAttribute("d",
+  superPath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${sArc[0]!.x} ${sArc[0]!.y} ` +
-    pointsToPath(sArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(sArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Corrected superellipse
   const corrArc = superellipsePoints(corrR, mathN).map((p) => arcToSvg(p.x, p.y, corrR));
-  corrPath.setAttribute("d",
+  corrPath.setAttribute(
+    "d",
     `M ${cornerX} ${PAD + BOX} L ${corrArc[0]!.x} ${corrArc[0]!.y} ` +
-    pointsToPath(corrArc).slice(2) +
-    ` L ${PAD} ${cornerY}`);
+      pointsToPath(corrArc).slice(2) +
+      ` L ${PAD} ${cornerY}`,
+  );
 
   // Junction dots
-  const cFirst = cArc[0]!, cLast = cArc[cArc.length - 1]!;
-  cDotRight.setAttribute("cx", String(cFirst.x)); cDotRight.setAttribute("cy", String(cFirst.y));
-  cDotTop.setAttribute("cx", String(cLast.x));    cDotTop.setAttribute("cy", String(cLast.y));
+  const cFirst = cArc[0]!,
+    cLast = cArc[cArc.length - 1]!;
+  cDotRight.setAttribute("cx", String(cFirst.x));
+  cDotRight.setAttribute("cy", String(cFirst.y));
+  cDotTop.setAttribute("cx", String(cLast.x));
+  cDotTop.setAttribute("cy", String(cLast.y));
 
-  const sFirst = sArc[0]!, sLast = sArc[sArc.length - 1]!;
-  sDotRight.setAttribute("cx", String(sFirst.x)); sDotRight.setAttribute("cy", String(sFirst.y));
-  sDotTop.setAttribute("cx", String(sLast.x));    sDotTop.setAttribute("cy", String(sLast.y));
+  const sFirst = sArc[0]!,
+    sLast = sArc[sArc.length - 1]!;
+  sDotRight.setAttribute("cx", String(sFirst.x));
+  sDotRight.setAttribute("cy", String(sFirst.y));
+  sDotTop.setAttribute("cx", String(sLast.x));
+  sDotTop.setAttribute("cy", String(sLast.y));
 
-  const corrFirst = corrArc[0]!, corrLast = corrArc[corrArc.length - 1]!;
-  corrDotRight.setAttribute("cx", String(corrFirst.x)); corrDotRight.setAttribute("cy", String(corrFirst.y));
-  corrDotTop.setAttribute("cx", String(corrLast.x));    corrDotTop.setAttribute("cy", String(corrLast.y));
+  const corrFirst = corrArc[0]!,
+    corrLast = corrArc[corrArc.length - 1]!;
+  corrDotRight.setAttribute("cx", String(corrFirst.x));
+  corrDotRight.setAttribute("cy", String(corrFirst.y));
+  corrDotTop.setAttribute("cx", String(corrLast.x));
+  corrDotTop.setAttribute("cy", String(corrLast.y));
 
   // Readouts
   document.getElementById("formula-n")!.textContent = mathN.toFixed(1);
@@ -426,6 +446,7 @@ git commit -m "refactor: convert demo.mjs to TypeScript"
 ### Task 4: Move and convert `plugin.js` → `src/plugin.ts`
 
 **Files:**
+
 - Create: `src/plugin.ts`
 - Delete: `plugin.js`
 
@@ -702,6 +723,7 @@ git commit -m "refactor: convert plugin.js to TypeScript"
 ### Task 5: Move and convert `merge.js` → `src/merge.ts`
 
 **Files:**
+
 - Create: `src/merge.ts`
 - Delete: `merge.js`
 
@@ -750,9 +772,7 @@ export const squircleMergeConfig = {
     },
     conflictingClassGroups: {
       squircle: [...allRoundedGroups, "squircle-amt"],
-      ...Object.fromEntries(
-        allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]]),
-      ),
+      ...Object.fromEntries(allRoundedGroups.map((g) => [g, ["squircle", "squircle-amt"]])),
     },
   },
 } as const;
@@ -776,6 +796,7 @@ git commit -m "refactor: convert merge.js to TypeScript"
 ### Task 6: Move `squircle.css` → `src/squircle.css`
 
 **Files:**
+
 - Move: `squircle.css` → `src/squircle.css`
 
 - [ ] **Step 1: Move the file**
@@ -795,6 +816,7 @@ git commit -m "refactor: move squircle.css into src/"
 ### Task 7: Update `vite.config.ts` with pack config and Tailwind plugin
 
 **Files:**
+
 - Modify: `vite.config.ts`
 
 - [ ] **Step 1: Update `vite.config.ts`**
@@ -853,11 +875,13 @@ git commit -m "feat: add pack config and Tailwind Vite plugin"
 ### Task 8: Update `package.json` — exports, scripts, dependencies
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Step 1: Update `package.json`**
 
 Changes:
+
 - `exports` point to `dist/` with `types` conditions
 - `files` field becomes `["dist"]`
 - Scripts use `vp` commands and `--root docs`
@@ -882,9 +906,7 @@ Changes:
       "import": "./dist/plugin.js"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "peerDependencies": {
     "tailwind-merge": ">=2.0.0",
     "tailwindcss": ">=4.0.0"
@@ -946,6 +968,7 @@ git commit -m "feat: update package.json for Vite Plus migration"
 ### Task 9: Update `docs/index.html` and `docs/styles.css`
 
 **Files:**
+
 - Modify: `docs/index.html`
 - Modify: `docs/styles.css`
 - Delete: `docs/dist.css`
@@ -953,6 +976,7 @@ git commit -m "feat: update package.json for Vite Plus migration"
 - [ ] **Step 1: Update `docs/index.html`**
 
 Two changes:
+
 1. Line 7: `<link rel="stylesheet" href="dist.css">` → `<link rel="stylesheet" href="styles.css">`
 2. Line 149: `<script type="module" src="demo.mjs">` → `<script type="module" src="src/demo.ts">`
 
@@ -1022,6 +1046,7 @@ git commit -m "fix: resolve build issues from migration"
 ### Task 11: Update sync-readme script and workflow
 
 **Files:**
+
 - Modify: `scripts/sync-readme.sh`
 - Modify: `.github/workflows/sync-readme.yml`
 - Modify: `README.md` (markers)
@@ -1039,6 +1064,7 @@ sync_file "src/plugin.ts" "ts"
 - [ ] **Step 2: Update README.md markers**
 
 Find and replace in `README.md`:
+
 - `<!-- BEGIN:squircle.css -->` → `<!-- BEGIN:src/squircle.css -->`
 - `<!-- END:squircle.css -->` → `<!-- END:src/squircle.css -->`
 - `<!-- BEGIN:merge.js -->` → `<!-- BEGIN:src/merge.ts -->`
@@ -1103,6 +1129,7 @@ git commit -m "chore: update sync-readme for src/ paths and TypeScript"
 ### Task 12: Add GitHub Pages deploy workflow
 
 **Files:**
+
 - Create: `.github/workflows/deploy-site.yml`
 
 - [ ] **Step 1: Create `.github/workflows/deploy-site.yml`**
@@ -1173,6 +1200,7 @@ git commit -m "ci: add GitHub Pages deploy workflow"
 ### Task 13: Clean up old files
 
 **Files:**
+
 - Delete: `scripts/serve.mjs`
 - Delete: `.oxlintrc.json` (if present — config now in `vite.config.ts`)
 - Delete: `.oxfmtrc.json` (if present — config now in `vite.config.ts`)

@@ -1,151 +1,213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@klinking/tw-squircle — Interactive Demo</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@klinking/tw-squircle — Interactive Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100">
+    <div class="mx-auto max-w-5xl px-4 py-12">
+      <!-- Header -->
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold">@klinking/tw-squircle</h1>
+        <p class="mt-2 text-zinc-400">
+          Tailwind CSS v4 superellipse corner utilities with visual radius correction
+        </p>
+        <a
+          href="https://github.com/dogmar/tw-squircle"
+          class="mt-1 inline-block text-sm text-indigo-400 hover:underline"
+          >GitHub</a
+        >
+      </header>
+    </div>
 
-  <div class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Sticky Controls -->
+    <div class="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
+      <div class="mx-auto max-w-5xl px-4 py-3">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end">
+          <!-- Correction toggle -->
+          <button
+            type="button"
+            id="correction-toggle"
+            role="switch"
+            aria-checked="true"
+            class="group flex shrink-0 cursor-pointer items-center gap-3"
+          >
+            <div
+              id="toggle-track"
+              class="relative h-6 w-11 rounded-full bg-indigo-600 transition-colors"
+            >
+              <div
+                id="toggle-knob"
+                class="absolute top-0.5 left-[1.375rem] h-5 w-5 rounded-full bg-white transition-all"
+              ></div>
+            </div>
+            <span class="text-sm font-medium">Correction</span>
+            <span
+              id="correction-status"
+              class="rounded bg-emerald-400/10 px-2 py-0.5 text-xs text-emerald-400"
+              >ON</span
+            >
+          </button>
 
-    <!-- Header -->
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold">@klinking/tw-squircle</h1>
-      <p class="text-zinc-400 mt-2">Tailwind CSS v4 superellipse corner utilities with visual radius correction</p>
-      <a href="https://github.com/dogmar/tw-squircle" class="text-indigo-400 hover:underline text-sm mt-1 inline-block">GitHub</a>
-    </header>
-  </div>
-
-  <!-- Sticky Controls -->
-  <div class="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800">
-    <div class="max-w-5xl mx-auto px-4 py-3">
-      <div class="flex flex-col md:flex-row md:items-end gap-4">
-        <!-- Correction toggle -->
-        <button type="button" id="correction-toggle" role="switch" aria-checked="true"
-                class="flex items-center gap-3 cursor-pointer group shrink-0">
-          <div id="toggle-track" class="w-11 h-6 bg-indigo-600 rounded-full relative transition-colors">
-            <div id="toggle-knob" class="absolute top-0.5 left-[1.375rem] w-5 h-5 bg-white rounded-full transition-all"></div>
+          <!-- Radius slider -->
+          <div class="min-w-0 flex-1">
+            <label class="text-xs tracking-wider text-zinc-500 uppercase">Border Radius</label>
+            <div class="mt-1 flex items-center gap-3">
+              <input
+                type="range"
+                id="radius-slider"
+                min="0"
+                max="160"
+                value="60"
+                step="1"
+                class="flex-1 accent-indigo-500"
+              />
+              <span id="radius-value" class="w-12 text-right font-mono text-sm text-indigo-400"
+                >60px</span
+              >
+            </div>
           </div>
-          <span class="text-sm font-medium">Correction</span>
-          <span id="correction-status" class="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">ON</span>
-        </button>
 
-        <!-- Radius slider -->
-        <div class="flex-1 min-w-0">
-          <label class="text-xs text-zinc-500 uppercase tracking-wider">Border Radius</label>
-          <div class="flex items-center gap-3 mt-1">
-            <input type="range" id="radius-slider" min="0" max="160" value="60" step="1"
-                   class="flex-1 accent-indigo-500">
-            <span id="radius-value" class="text-indigo-400 font-mono text-sm w-12 text-right">60px</span>
-          </div>
-        </div>
-
-        <!-- Exponent slider -->
-        <div class="flex-1 min-w-0">
-          <label class="text-xs text-zinc-500 uppercase tracking-wider">Superellipse Exponent</label>
-          <div class="flex items-center gap-3 mt-1">
-            <input type="range" id="exponent-slider" min="1" max="8" value="1.5" step="0.1"
-                   class="flex-1 accent-amber-500">
-            <span id="exponent-value" class="text-amber-400 font-mono text-sm w-16 text-right">n = 1.5</span>
+          <!-- Exponent slider -->
+          <div class="min-w-0 flex-1">
+            <label class="text-xs tracking-wider text-zinc-500 uppercase"
+              >Superellipse Exponent</label
+            >
+            <div class="mt-1 flex items-center gap-3">
+              <input
+                type="range"
+                id="exponent-slider"
+                min="1"
+                max="8"
+                value="1.5"
+                step="0.1"
+                class="flex-1 accent-amber-500"
+              />
+              <span id="exponent-value" class="w-16 text-right font-mono text-sm text-amber-400"
+                >n = 1.5</span
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="max-w-5xl mx-auto px-4 pt-8">
-
-    <!-- Combined Section: Overlay + Math Explorer side by side -->
-    <section class="mb-16">
-      <div class="flex flex-col md:flex-row gap-6 mb-6">
-        <!-- Left: Overlay Comparison -->
-        <div class="flex-1 min-w-0">
-          <h3 class="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">CSS Overlay</h3>
-          <div class="relative aspect-square w-64">
-            <!-- Circle overlay (red) -->
-            <div id="overlay-box-circle"
-                 class="absolute inset-0 border-2 border-red-500"
-                 style="border-radius: 0; border-top-right-radius: 60px;">
+    <div class="mx-auto max-w-5xl px-4 pt-8">
+      <!-- Combined Section: Overlay + Math Explorer side by side -->
+      <section class="mb-16">
+        <div class="mb-6 flex flex-col gap-6 md:flex-row">
+          <!-- Left: Overlay Comparison -->
+          <div class="min-w-0 flex-1">
+            <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
+              CSS Overlay
+            </h3>
+            <div class="relative aspect-square w-64">
+              <!-- Circle overlay (red) -->
+              <div
+                id="overlay-box-circle"
+                class="absolute inset-0 border-2 border-red-500"
+                style="border-radius: 0; border-top-right-radius: 60px"
+              ></div>
+              <!-- Squircle overlay (blue) -->
+              <div
+                id="overlay-box-squircle"
+                class="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10"
+                style="
+                  border-radius: 0;
+                  border-top-right-radius: 78px;
+                  corner-shape: superellipse(1.5);
+                "
+              ></div>
+              <!-- Legend -->
+              <div class="absolute top-3 right-3 space-y-1 text-right text-xs">
+                <div class="text-red-500">● circular</div>
+                <div class="text-indigo-500">● squircle</div>
+              </div>
             </div>
-            <!-- Squircle overlay (blue) -->
-            <div id="overlay-box-squircle"
-                 class="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10"
-                 style="border-radius: 0; border-top-right-radius: 78px; corner-shape: superellipse(1.5);">
-            </div>
-            <!-- Legend -->
-            <div class="absolute top-3 right-3 text-xs space-y-1 text-right">
-              <div class="text-red-500">● circular</div>
-              <div class="text-indigo-500">● squircle</div>
+            <!-- Readout -->
+            <div class="mt-3 space-y-0.5 font-mono text-xs text-zinc-500">
+              <div>circle r: <span id="readout-circle-r" class="text-red-400">60</span>px</div>
+              <div>
+                squircle r: <span id="readout-squircle-r" class="text-indigo-400">78</span>px
+              </div>
             </div>
           </div>
-          <!-- Readout -->
-          <div class="text-xs font-mono text-zinc-500 space-y-0.5 mt-3">
-            <div>circle r: <span id="readout-circle-r" class="text-red-400">60</span>px</div>
-            <div>squircle r: <span id="readout-squircle-r" class="text-indigo-400">78</span>px</div>
+
+          <!-- Right: Math Explorer SVG -->
+          <div class="min-w-0 flex-1">
+            <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
+              Math Explorer
+            </h3>
+            <div class="inline-block rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+              <svg id="math-svg" viewBox="0 0 200 200" class="h-64 w-64">
+                <!-- Curves rendered by demo.mjs -->
+              </svg>
+            </div>
           </div>
         </div>
 
-        <!-- Right: Math Explorer SVG -->
-        <div class="flex-1 min-w-0">
-          <h3 class="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-3">Math Explorer</h3>
-          <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4 inline-block">
-            <svg id="math-svg" viewBox="0 0 200 200" class="w-64 h-64">
-              <!-- Curves rendered by demo.mjs -->
-            </svg>
+        <!-- Formula readout + table -->
+        <div class="max-w-lg">
+          <div
+            id="formula-readout"
+            class="rounded-lg border border-zinc-800 bg-zinc-900 p-3 font-mono text-sm"
+          >
+            <div class="mb-1 text-zinc-500">Correction formula:</div>
+            <div class="text-indigo-400">
+              r' = <span id="formula-r" class="text-amber-400">r</span> &times; (1 -
+              2<sup>-&frac12;</sup>) / (1 - 2<sup
+                >-1/<span id="formula-n" class="text-amber-400">n</span></sup
+              >)
+            </div>
+            <div class="mt-1 text-zinc-100">= <strong id="formula-result">130</strong>px</div>
+            <table class="mt-3 w-full border-t border-zinc-800 pt-2 text-xs">
+              <thead>
+                <tr class="text-zinc-500">
+                  <th class="pt-2 pb-1 text-left font-medium"></th>
+                  <th class="pt-2 pb-1 text-right font-medium">Radius</th>
+                  <th class="pt-2 pb-1 text-right font-medium">Perceived Radius</th>
+                  <th class="pt-2 pb-1 text-right font-medium">Diff</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-red-400">
+                  <td>Circle</td>
+                  <td id="radius-circle" class="text-right">—</td>
+                  <td id="bevel-circle" class="text-right">—</td>
+                  <td id="diff-circle" class="text-right">—</td>
+                </tr>
+                <tr class="text-indigo-400">
+                  <td>Superellipse</td>
+                  <td id="radius-superellipse" class="text-right">—</td>
+                  <td id="bevel-superellipse" class="text-right">—</td>
+                  <td id="diff-superellipse" class="text-right">—</td>
+                </tr>
+                <tr class="text-emerald-400">
+                  <td>Corrected</td>
+                  <td id="radius-corrected" class="text-right">—</td>
+                  <td id="bevel-corrected" class="text-right">—</td>
+                  <td id="diff-corrected" class="text-right">—</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Formula readout + table -->
-      <div class="max-w-lg">
-        <div id="formula-readout" class="bg-zinc-900 border border-zinc-800 rounded-lg p-3 font-mono text-sm">
-          <div class="text-zinc-500 mb-1">Correction formula:</div>
-          <div class="text-indigo-400">r' = <span id="formula-r" class="text-amber-400">r</span> &times; (1 - 2<sup>-&frac12;</sup>) / (1 - 2<sup>-1/<span id="formula-n" class="text-amber-400">n</span></sup>)</div>
-          <div class="text-zinc-100 mt-1">= <strong id="formula-result">130</strong>px</div>
-          <table class="w-full text-xs mt-3 border-t border-zinc-800 pt-2">
-            <thead>
-              <tr class="text-zinc-500">
-                <th class="text-left font-medium pt-2 pb-1"></th>
-                <th class="text-right font-medium pt-2 pb-1">Radius</th>
-                <th class="text-right font-medium pt-2 pb-1">Perceived Radius</th>
-                <th class="text-right font-medium pt-2 pb-1">Diff</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="text-red-400">
-                <td>Circle</td>
-                <td id="radius-circle" class="text-right">—</td>
-                <td id="bevel-circle" class="text-right">—</td>
-                <td id="diff-circle" class="text-right">—</td>
-              </tr>
-              <tr class="text-indigo-400">
-                <td>Superellipse</td>
-                <td id="radius-superellipse" class="text-right">—</td>
-                <td id="bevel-superellipse" class="text-right">—</td>
-                <td id="diff-superellipse" class="text-right">—</td>
-              </tr>
-              <tr class="text-emerald-400">
-                <td>Corrected</td>
-                <td id="radius-corrected" class="text-right">—</td>
-                <td id="bevel-corrected" class="text-right">—</td>
-                <td id="diff-corrected" class="text-right">—</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      <!-- Footer -->
+      <footer class="flex gap-4 border-t border-zinc-800 pt-6 text-xs text-zinc-600">
+        <a href="https://www.npmjs.com/package/@klinking/tw-squircle" class="hover:text-zinc-400"
+          >npm</a
+        >
+        <a href="https://github.com/dogmar/tw-squircle" class="hover:text-zinc-400">GitHub</a>
+        <a href="https://caniuse.com/?search=corner-shape" class="hover:text-zinc-400"
+          >Browser Support</a
+        >
+      </footer>
+    </div>
 
-    <!-- Footer -->
-    <footer class="text-zinc-600 text-xs border-t border-zinc-800 pt-6 flex gap-4">
-      <a href="https://www.npmjs.com/package/@klinking/tw-squircle" class="hover:text-zinc-400">npm</a>
-      <a href="https://github.com/dogmar/tw-squircle" class="hover:text-zinc-400">GitHub</a>
-      <a href="https://caniuse.com/?search=corner-shape" class="hover:text-zinc-400">Browser Support</a>
-    </footer>
-  </div>
-
-  <script type="module" src="src/demo.ts"></script>
-</body>
+    <script type="module" src="src/demo.ts"></script>
+  </body>
 </html>
