@@ -5,6 +5,8 @@ const correctedRadius = (value) =>
 
 const cornerShape = "superellipse(var(--squircle-amt, 1.5))";
 
+const supportsCornerShape = "@supports (corner-shape: superellipse())";
+
 export default plugin(function ({ matchUtilities, theme }) {
   const radiusValues = theme("borderRadius");
 
@@ -13,7 +15,9 @@ export default plugin(function ({ matchUtilities, theme }) {
     {
       "squircle-amt": (value) => ({
         "--squircle-amt": value,
-        "corner-shape": "superellipse(var(--squircle-amt))",
+        [supportsCornerShape]: {
+          "corner-shape": "superellipse(var(--squircle-amt))",
+        },
       }),
     },
     { type: "number" },
@@ -23,24 +27,31 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       squircle: (value) => ({
-        "--squircle-r": correctedRadius(value),
-        "border-radius": "var(--squircle-r)",
-        "corner-shape": cornerShape,
+        "border-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
   );
 
-  // --- Per-side variants (use intermediate --squircle-r variable) ---
+  // --- Per-side physical variants (use intermediate --squircle-r variable) ---
 
   // squircle-t-* — top-left + top-right
   matchUtilities(
     {
       "squircle-t": (value) => ({
-        "--squircle-r": correctedRadius(value),
-        "border-top-left-radius": "var(--squircle-r)",
-        "border-top-right-radius": "var(--squircle-r)",
-        "corner-shape": cornerShape,
+        "border-top-left-radius": value,
+        "border-top-right-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-top-left-radius": "var(--squircle-r)",
+          "border-top-right-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -50,10 +61,14 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-r": (value) => ({
-        "--squircle-r": correctedRadius(value),
-        "border-top-right-radius": "var(--squircle-r)",
-        "border-bottom-right-radius": "var(--squircle-r)",
-        "corner-shape": cornerShape,
+        "border-top-right-radius": value,
+        "border-bottom-right-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-top-right-radius": "var(--squircle-r)",
+          "border-bottom-right-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -63,10 +78,14 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-b": (value) => ({
-        "--squircle-r": correctedRadius(value),
-        "border-bottom-left-radius": "var(--squircle-r)",
-        "border-bottom-right-radius": "var(--squircle-r)",
-        "corner-shape": cornerShape,
+        "border-bottom-left-radius": value,
+        "border-bottom-right-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-bottom-left-radius": "var(--squircle-r)",
+          "border-bottom-right-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -76,23 +95,66 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-l": (value) => ({
-        "--squircle-r": correctedRadius(value),
-        "border-top-left-radius": "var(--squircle-r)",
-        "border-bottom-left-radius": "var(--squircle-r)",
-        "corner-shape": cornerShape,
+        "border-top-left-radius": value,
+        "border-bottom-left-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-top-left-radius": "var(--squircle-r)",
+          "border-bottom-left-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
   );
 
-  // --- Per-corner variants (NO intermediate variable, direct calc) ---
+  // --- Per-side logical variants (use intermediate --squircle-r variable) ---
+
+  // squircle-s-* — start-start + end-start (inline-start side)
+  matchUtilities(
+    {
+      "squircle-s": (value) => ({
+        "border-start-start-radius": value,
+        "border-end-start-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-start-start-radius": "var(--squircle-r)",
+          "border-end-start-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // squircle-e-* — start-end + end-end (inline-end side)
+  matchUtilities(
+    {
+      "squircle-e": (value) => ({
+        "border-start-end-radius": value,
+        "border-end-end-radius": value,
+        [supportsCornerShape]: {
+          "--squircle-r": correctedRadius(value),
+          "border-start-end-radius": "var(--squircle-r)",
+          "border-end-end-radius": "var(--squircle-r)",
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // --- Per-corner physical variants (NO intermediate variable, direct calc) ---
 
   // squircle-tl-*
   matchUtilities(
     {
       "squircle-tl": (value) => ({
-        "border-top-left-radius": correctedRadius(value),
-        "corner-shape": cornerShape,
+        "border-top-left-radius": value,
+        [supportsCornerShape]: {
+          "border-top-left-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -102,8 +164,11 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-tr": (value) => ({
-        "border-top-right-radius": correctedRadius(value),
-        "corner-shape": cornerShape,
+        "border-top-right-radius": value,
+        [supportsCornerShape]: {
+          "border-top-right-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -113,8 +178,11 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-br": (value) => ({
-        "border-bottom-right-radius": correctedRadius(value),
-        "corner-shape": cornerShape,
+        "border-bottom-right-radius": value,
+        [supportsCornerShape]: {
+          "border-bottom-right-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
@@ -124,8 +192,69 @@ export default plugin(function ({ matchUtilities, theme }) {
   matchUtilities(
     {
       "squircle-bl": (value) => ({
-        "border-bottom-left-radius": correctedRadius(value),
-        "corner-shape": cornerShape,
+        "border-bottom-left-radius": value,
+        [supportsCornerShape]: {
+          "border-bottom-left-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // --- Per-corner logical variants (NO intermediate variable, direct calc) ---
+
+  // squircle-ss-*
+  matchUtilities(
+    {
+      "squircle-ss": (value) => ({
+        "border-start-start-radius": value,
+        [supportsCornerShape]: {
+          "border-start-start-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // squircle-se-*
+  matchUtilities(
+    {
+      "squircle-se": (value) => ({
+        "border-start-end-radius": value,
+        [supportsCornerShape]: {
+          "border-start-end-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // squircle-es-*
+  matchUtilities(
+    {
+      "squircle-es": (value) => ({
+        "border-end-start-radius": value,
+        [supportsCornerShape]: {
+          "border-end-start-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
+      }),
+    },
+    { type: "length", values: radiusValues },
+  );
+
+  // squircle-ee-*
+  matchUtilities(
+    {
+      "squircle-ee": (value) => ({
+        "border-end-end-radius": value,
+        [supportsCornerShape]: {
+          "border-end-end-radius": correctedRadius(value),
+          "corner-shape": cornerShape,
+        },
       }),
     },
     { type: "length", values: radiusValues },
