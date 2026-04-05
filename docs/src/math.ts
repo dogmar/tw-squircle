@@ -8,8 +8,12 @@
  * @param n — mathematical exponent (n=2 is circle). CSS `superellipse(K)`
  *   maps to math exponent n = 2^K, so pass `Math.pow(2, K)` here.
  */
-export function superellipsePoints(r, n, numPoints = 100) {
-  const points = [];
+export function superellipsePoints(
+  r: number,
+  n: number,
+  numPoints: number = 100
+): Point[] {
+  const points: Point[] = [];
   for (let i = 0; i <= numPoints; i++) {
     const t = (i / numPoints) * (Math.PI / 2);
     const cosT = Math.cos(t);
@@ -26,7 +30,7 @@ export function superellipsePoints(r, n, numPoints = 100) {
  * Generate points along a circular arc (quarter circle) of radius r.
  * Returns [{x, y}, ...] from (r, 0) to (0, r).
  */
-export function circleArcPoints(r, numPoints = 100) {
+export function circleArcPoints(r: number, numPoints: number = 100): Point[] {
   return superellipsePoints(r, 2, numPoints);
 }
 
@@ -36,7 +40,7 @@ export function circleArcPoints(r, numPoints = 100) {
  * @param r — the circle's radius
  * @param n — mathematical exponent (n=2 is circle)
  */
-export function correctedRadius(r, n) {
+export function correctedRadius(r: number, n: number): number {
   return r * (1 - Math.pow(2, -0.5)) / (1 - Math.pow(2, -1 / n));
 }
 
@@ -47,7 +51,7 @@ export function correctedRadius(r, n) {
  * Bevel depth = perpendicular distance from origin to that line = k / √2.
  * For a circle (n=2): depth = r.
  */
-export function bevelDepthCircle(r) {
+export function bevelDepthCircle(r: number): number {
   return bevelDepth(r, 2);
 }
 
@@ -55,11 +59,11 @@ export function bevelDepthCircle(r) {
  * Bevel depth for a superellipse with exponent n and radius r.
  * depth = r * 2^(1 - 1/n) / √2
  */
-export function bevelDepthSuperellipse(r, n) {
+export function bevelDepthSuperellipse(r: number, n: number): number {
   return bevelDepth(r, n);
 }
 
-function bevelDepth(r, n) {
+function bevelDepth(r: number, n: number): number {
   const k = r * Math.pow(2, 1 - 1 / n);
   return k / Math.SQRT2;
 }
@@ -76,7 +80,11 @@ function bevelDepth(r, n) {
  * @param arcR — the curve's specified radius (axis extent)
  * @param n — mathematical exponent (n=2 is circle)
  */
-export function perceivedRadius(centerR, arcR, n) {
+export function perceivedRadius(
+  centerR: number,
+  arcR: number,
+  n: number
+): number {
   const apexFromCorner = arcR * (1 - Math.pow(2, -1 / n));
   return Math.SQRT2 * (centerR - apexFromCorner);
 }
@@ -84,8 +92,13 @@ export function perceivedRadius(centerR, arcR, n) {
 /**
  * Convert array of {x, y} points to SVG path "d" attribute.
  */
-export function pointsToPath(points) {
+export function pointsToPath(points: Point[]): string {
   if (points.length === 0) return "";
   const [first, ...rest] = points;
-  return `M ${first.x} ${first.y} ` + rest.map((p) => `L ${p.x} ${p.y}`).join(" ");
+  return `M ${first!.x} ${first!.y} ` + rest.map((p) => `L ${p.x} ${p.y}`).join(" ");
+}
+
+export interface Point {
+  x: number;
+  y: number;
 }

@@ -1,4 +1,4 @@
-const allRoundedGroups = [
+const allRoundedGroups: string[] = [
   "rounded",
   "rounded-s",
   "rounded-e",
@@ -45,4 +45,4 @@ export const squircleMergeConfig = {
       ),
     },
   },
-};
+} as const;

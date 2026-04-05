@@ -1,6 +1,6 @@
 import plugin from "tailwindcss/plugin";
 
-const correctedRadius = (value) =>
+const correctedRadius = (value: string) =>
   `calc(${value} * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, 1.5)))))`;
 
 const cornerShape = "superellipse(var(--squircle-amt, 1.5))";
@@ -13,7 +13,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-amt-* — sets exponent + corner-shape
   matchUtilities(
     {
-      "squircle-amt": (value) => ({
+      "squircle-amt": (value: string) => ({
         "--squircle-amt": value,
         [supportsCornerShape]: {
           "corner-shape": "superellipse(var(--squircle-amt))",
@@ -26,7 +26,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-* — all corners (uses intermediate --squircle-r variable)
   matchUtilities(
     {
-      squircle: (value) => ({
+      squircle: (value: string) => ({
         "border-radius": value,
         [supportsCornerShape]: {
           "--squircle-r": correctedRadius(value),
@@ -43,7 +43,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-t-* — top-left + top-right
   matchUtilities(
     {
-      "squircle-t": (value) => ({
+      "squircle-t": (value: string) => ({
         "border-top-left-radius": value,
         "border-top-right-radius": value,
         [supportsCornerShape]: {
@@ -60,7 +60,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-r-* — top-right + bottom-right
   matchUtilities(
     {
-      "squircle-r": (value) => ({
+      "squircle-r": (value: string) => ({
         "border-top-right-radius": value,
         "border-bottom-right-radius": value,
         [supportsCornerShape]: {
@@ -77,7 +77,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-b-* — bottom-left + bottom-right
   matchUtilities(
     {
-      "squircle-b": (value) => ({
+      "squircle-b": (value: string) => ({
         "border-bottom-left-radius": value,
         "border-bottom-right-radius": value,
         [supportsCornerShape]: {
@@ -94,7 +94,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-l-* — top-left + bottom-left
   matchUtilities(
     {
-      "squircle-l": (value) => ({
+      "squircle-l": (value: string) => ({
         "border-top-left-radius": value,
         "border-bottom-left-radius": value,
         [supportsCornerShape]: {
@@ -113,7 +113,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-s-* — start-start + end-start (inline-start side)
   matchUtilities(
     {
-      "squircle-s": (value) => ({
+      "squircle-s": (value: string) => ({
         "border-start-start-radius": value,
         "border-end-start-radius": value,
         [supportsCornerShape]: {
@@ -130,7 +130,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-e-* — start-end + end-end (inline-end side)
   matchUtilities(
     {
-      "squircle-e": (value) => ({
+      "squircle-e": (value: string) => ({
         "border-start-end-radius": value,
         "border-end-end-radius": value,
         [supportsCornerShape]: {
@@ -149,7 +149,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-tl-*
   matchUtilities(
     {
-      "squircle-tl": (value) => ({
+      "squircle-tl": (value: string) => ({
         "border-top-left-radius": value,
         [supportsCornerShape]: {
           "border-top-left-radius": correctedRadius(value),
@@ -163,7 +163,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-tr-*
   matchUtilities(
     {
-      "squircle-tr": (value) => ({
+      "squircle-tr": (value: string) => ({
         "border-top-right-radius": value,
         [supportsCornerShape]: {
           "border-top-right-radius": correctedRadius(value),
@@ -177,7 +177,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-br-*
   matchUtilities(
     {
-      "squircle-br": (value) => ({
+      "squircle-br": (value: string) => ({
         "border-bottom-right-radius": value,
         [supportsCornerShape]: {
           "border-bottom-right-radius": correctedRadius(value),
@@ -191,7 +191,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-bl-*
   matchUtilities(
     {
-      "squircle-bl": (value) => ({
+      "squircle-bl": (value: string) => ({
         "border-bottom-left-radius": value,
         [supportsCornerShape]: {
           "border-bottom-left-radius": correctedRadius(value),
@@ -207,7 +207,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-ss-*
   matchUtilities(
     {
-      "squircle-ss": (value) => ({
+      "squircle-ss": (value: string) => ({
         "border-start-start-radius": value,
         [supportsCornerShape]: {
           "border-start-start-radius": correctedRadius(value),
@@ -221,7 +221,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-se-*
   matchUtilities(
     {
-      "squircle-se": (value) => ({
+      "squircle-se": (value: string) => ({
         "border-start-end-radius": value,
         [supportsCornerShape]: {
           "border-start-end-radius": correctedRadius(value),
@@ -235,7 +235,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-es-*
   matchUtilities(
     {
-      "squircle-es": (value) => ({
+      "squircle-es": (value: string) => ({
         "border-end-start-radius": value,
         [supportsCornerShape]: {
           "border-end-start-radius": correctedRadius(value),
@@ -249,7 +249,7 @@ export default plugin(function ({ matchUtilities, theme }) {
   // squircle-ee-*
   matchUtilities(
     {
-      "squircle-ee": (value) => ({
+      "squircle-ee": (value: string) => ({
         "border-end-end-radius": value,
         [supportsCornerShape]: {
           "border-end-end-radius": correctedRadius(value),
