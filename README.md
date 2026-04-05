@@ -74,7 +74,7 @@ If you'd rather not add a dependency, copy the source directly:
 
 ### squircle.css
 
-<!-- BEGIN:src/squircle.css -->
+<!-- BEGIN:dist/squircle.css -->
 
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
@@ -281,11 +281,11 @@ If you'd rather not add a dependency, copy the source directly:
 }
 ```
 
-<!-- END:src/squircle.css -->
+<!-- END:dist/squircle.css -->
 
 ### plugin.js
 
-<!-- BEGIN:src/plugin.ts -->
+<!-- BEGIN:dist/plugin.mjs -->
 
 ```ts
 import plugin from "tailwindcss/plugin";
@@ -558,11 +558,11 @@ const squircle: PluginWithConfig = plugin(squirclePlugin);
 export default squircle;
 ```
 
-<!-- END:src/plugin.ts -->
+<!-- END:dist/plugin.mjs -->
 
 ### merge.js
 
-<!-- BEGIN:src/merge.ts -->
+<!-- BEGIN:dist/merge.mjs -->
 
 ```ts
 const allRoundedGroups: string[] = [
@@ -613,7 +613,7 @@ export const squircleMergeConfig = {
 } as const;
 ```
 
-<!-- END:src/merge.ts -->
+<!-- END:dist/merge.mjs -->
 
 ## Browser Support
 

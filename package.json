@@ -34,22 +34,18 @@
   },
   "scripts": {
     "dev": "vite docs",
-    "build": "vp pack && cp src/squircle.css dist/squircle.css && cp src/squircle-radius.css dist/squircle-radius.css",
-    "build:site": "vite build docs",
     "prepare": "vp config",
-    "lint": "vp lint",
-    "lint:fix": "vp lint --fix",
-    "fmt": "vp fmt",
-    "fmt:check": "vp fmt --check",
-    "sync-readme": "./scripts/sync-readme.sh",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^25.5.2",
     "oxlint": "^1.58.0",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "tailwind-merge": ">=2.0.0",
@@ -59,5 +55,6 @@
     "tailwind-merge": {
       "optional": true
     }
-  }
+  },
+  "packageManager": "pnpm@10.33.0"
 }
