@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - squircle.css
-      - merge.js
-      - plugin.js
+      - src/squircle.css
+      - src/merge.ts
+      - src/plugin.ts
 
 jobs:
   sync:
