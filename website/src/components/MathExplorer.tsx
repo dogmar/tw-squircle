@@ -12,6 +12,7 @@ interface MathExplorerProps {
   showSuperellipse?: boolean;
   showCorrected?: boolean;
   amount?: number;
+  measureArc?: "rounded" | "superellipse" | "corrected";
 }
 
 const BOX = 180;
@@ -39,6 +40,7 @@ export default function MathExplorer({
   showSuperellipse: showSuperellipseProp = true,
   showCorrected: showCorrectedProp = true,
   amount: initialAmount = 1.5,
+  measureArc,
 }: MathExplorerProps) {
   const [amount, setAmount] = useState(initialAmount);
   const [amountText, setAmountText] = useState(String(initialAmount));
@@ -72,6 +74,25 @@ export default function MathExplorer({
     const superPerceived = perceivedRadius(r, r, mathN);
     const corrPerceived = perceivedRadius(r, corrR, mathN);
 
+    // Measurement line data
+    let measure: { endX: number; endY: number; ratio: number; cssVar: string } | null = null;
+    if (measureArc) {
+      const arcR = measureArc === "corrected" ? corrR : r;
+      const n = measureArc === "rounded" ? 2 : mathN;
+      const d = arcR * (1 - Math.pow(2, -1 / n));
+      const endX = cornerX - d;
+      const endY = cornerY + d;
+      const lineLen = Math.sqrt(2) * d;
+      const ratio = lineLen / r;
+      const cssVar =
+        measureArc === "rounded"
+          ? "--color-rounded-border"
+          : measureArc === "superellipse"
+            ? "--color-squircle-border"
+            : "--color-squircle-adjusted-border";
+      measure = { endX, endY, ratio, cssVar };
+    }
+
     return {
       mathN,
       r,
@@ -85,8 +106,9 @@ export default function MathExplorer({
       circlePerceived,
       superPerceived,
       corrPerceived,
+      measure,
     };
-  }, [amount]);
+  }, [amount, measureArc]);
 
   function handleTextCommit(value: string) {
     const parsed = parseFloat(value);
@@ -112,6 +134,7 @@ export default function MathExplorer({
     circlePerceived,
     superPerceived,
     corrPerceived,
+    measure,
   } = data;
 
   const circleDiff = circlePerceived - circlePerceived;
@@ -238,6 +261,40 @@ export default function MathExplorer({
               style={{ stroke: "var(--color-squircle-adjusted-border)" }}
               strokeWidth={1}
             />
+          </g>
+        )}
+
+        {/* Measurement line */}
+        {measure && (
+          <g>
+            {/* Diagonal line from corner to curve apex */}
+            <line
+              x1={cornerX}
+              y1={cornerY}
+              x2={measure.endX}
+              y2={measure.endY}
+              style={{ stroke: `var(${measure.cssVar})` }}
+              strokeWidth={0.75}
+            />
+            {/* Perpendicular serif at the curve end */}
+            <line
+              x1={measure.endX - 5 / Math.SQRT2}
+              y1={measure.endY - 5 / Math.SQRT2}
+              x2={measure.endX + 5 / Math.SQRT2}
+              y2={measure.endY + 5 / Math.SQRT2}
+              style={{ stroke: `var(${measure.cssVar})` }}
+              strokeWidth={0.75}
+            />
+            {/* Ratio label */}
+            <text
+              x={(cornerX + measure.endX) / 2 + 6}
+              y={(cornerY + measure.endY) / 2 - 6}
+              fill="currentColor"
+              fontSize={9}
+              className="text-zinc-400"
+            >
+              {measure.ratio.toFixed(2)}
+            </text>
           </g>
         )}
       </svg>
