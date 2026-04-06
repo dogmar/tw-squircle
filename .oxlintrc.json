@@ -5,6 +5,7 @@
     "correctness": "error"
   },
   "rules": {},
+  "ignorePatterns": [".astro/"],
   "env": {
     "builtin": true
   },
