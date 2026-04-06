@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 import { motion } from "framer-motion";
 import { circleArcPoints, correctedRadius, pointsToPath, superellipsePoints } from "../math";
 
@@ -42,6 +42,11 @@ export default function ExplorerGraphic({
   showMeasurement,
   measureArc,
 }: GraphicState) {
+  const id = useId();
+  const clipCircle = `${id}-clip-circle`;
+  const clipSuper = `${id}-clip-super`;
+  const clipCorr = `${id}-clip-corr`;
+
   const data = useMemo(() => {
     const mathN = Math.pow(2, amount);
     const corrFactor = correctedRadius(1, mathN);
@@ -134,13 +139,13 @@ export default function ExplorerGraphic({
       className="w-full max-w-md"
     >
       <defs>
-        <clipPath id="clip-circle">
+        <clipPath id={clipCircle}>
           <path d={circleClip} />
         </clipPath>
-        <clipPath id="clip-super">
+        <clipPath id={clipSuper}>
           <path d={superClip} />
         </clipPath>
-        <clipPath id="clip-corr">
+        <clipPath id={clipCorr}>
           <path d={corrClip} />
         </clipPath>
       </defs>
@@ -154,7 +159,7 @@ export default function ExplorerGraphic({
           strokeWidth={3}
           strokeDasharray={DASH}
           strokeDashoffset={0}
-          clipPath="url(#clip-circle)"
+          clipPath={`url(#${clipCircle})`}
         />
         {/* Right junction: inward, inner stroke edge at junction */}
         <line
@@ -185,7 +190,7 @@ export default function ExplorerGraphic({
           strokeWidth={3}
           strokeDasharray={DASH}
           strokeDashoffset={-DASH_PERIOD / 3}
-          clipPath="url(#clip-super)"
+          clipPath={`url(#${clipSuper})`}
         />
         {/* Right junction: outward, inner stroke edge at junction */}
         <line
@@ -216,7 +221,7 @@ export default function ExplorerGraphic({
           strokeWidth={3}
           strokeDasharray={DASH}
           strokeDashoffset={(-2 * DASH_PERIOD) / 3}
-          clipPath="url(#clip-corr)"
+          clipPath={`url(#${clipCorr})`}
         />
         {/* Right junction: centered, inner stroke edge at junction */}
         <line

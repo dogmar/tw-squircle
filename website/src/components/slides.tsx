@@ -3,7 +3,7 @@ import type { GraphicState } from "./ExplorerGraphic";
 
 export type StepDef = {
   graphic?: Partial<GraphicState>;
-  transition?: { duration?: number; ease?: string };
+  transition?: { duration?: number };
 };
 
 export type Slide = {
