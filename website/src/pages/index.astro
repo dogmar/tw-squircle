@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import MathExplorer from "../components/MathExplorer";
 ---
 
 <html lang="en">
@@ -23,9 +24,16 @@ import "../styles/global.css";
     </div>
 
     <div class="mx-auto max-w-5xl px-4 pt-8">
-      <!-- MathExplorer island will go here -->
       <section class="mb-16">
-        <p class="text-zinc-500">MathExplorer placeholder</p>
+        <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
+          Math Explorer
+        </h3>
+        <MathExplorer
+          client:load
+          showRounded={true}
+          showSuperellipse={true}
+          showCorrected={true}
+        />
       </section>
 
       <!-- CodeGenerator island will go here -->
