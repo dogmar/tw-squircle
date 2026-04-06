@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import MathExplorer from "../components/MathExplorer";
+import CodeGenerator from "../components/CodeGenerator";
 ---
 
 <html lang="en">
@@ -36,9 +37,8 @@ import MathExplorer from "../components/MathExplorer";
         />
       </section>
 
-      <!-- CodeGenerator island will go here -->
       <section class="mb-16">
-        <p class="text-zinc-500">CodeGenerator placeholder</p>
+        <CodeGenerator client:visible />
       </section>
 
       <footer class="flex gap-4 border-t border-zinc-800 pt-6 text-xs text-zinc-600">
