@@ -2,6 +2,19 @@
 /* @source "../"; */
 /* @plugin "../../src/plugin.ts"; */
 
+@theme {
+  --color-rounded-border: oklch(0.67 0.17 257.57);
+  --color-rounded-border-hover: oklch(from var(--color-rounded-border) min(1, calc(l + 0.15)) c h);
+  --color-squircle-border: oklch(0.67 0.24 2.48);
+  --color-squircle-border-hover: oklch(
+    from var(--color-squircle-border) min(1, calc(l + 0.15)) c h
+  );
+  --color-squircle-adjusted-border: oklch(0.67 0.17 47.33);
+  --color-squircle-adjusted-border-hover: oklch(
+    from var(--color-squircle-adjusted-border) min(1, calc(l + 0.15)) c h
+  );
+}
+
 .slider-filled {
   @apply flex-1 accent-indigo-500;
 }
@@ -42,17 +55,4 @@
 
 .slider-unfilled::-moz-range-progress {
   background: theme(--color-zinc-700);
-}
-
-@theme {
-  --color-rounded-border: oklch(0.67 0.17 257.57);
-  --color-rounded-border-hover: oklch(from var(--color-rounded-border) min(1, calc(l + 0.15)) c h);
-  --color-squircle-border: oklch(0.67 0.24 2.48);
-  --color-squircle-border-hover: oklch(
-    from var(--color-squircle-border) min(1, calc(l + 0.15)) c h
-  );
-  --color-squircle-adjusted-border: oklch(0.67 0.17 47.33);
-  --color-squircle-adjusted-border-hover: oklch(
-    from var(--color-squircle-adjusted-border) min(1, calc(l + 0.15)) c h
-  );
 }

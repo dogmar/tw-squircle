@@ -26,48 +26,6 @@
     <div class="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
       <div class="mx-auto max-w-5xl px-4 py-3">
         <div class="flex flex-col gap-4 md:flex-row md:items-end">
-          <!-- Correction toggle -->
-          <button
-            type="button"
-            id="correction-toggle"
-            role="switch"
-            aria-checked="true"
-            class="group flex shrink-0 cursor-pointer items-center gap-3"
-          >
-            <div
-              id="toggle-track"
-              class="relative h-6 w-11 rounded-full bg-indigo-600 transition-colors"
-            >
-              <div
-                id="toggle-knob"
-                class="absolute top-0.5 left-4 h-5 w-5 rounded-full bg-white transition-all"
-              ></div>
-            </div>
-            <span class="text-sm font-medium">Correction</span>
-          </button>
-
-          <!-- Radius slider -->
-          <div class="min-w-0 flex-1">
-            <label class="text-xs tracking-wider text-zinc-500 uppercase">Border Radius</label>
-            <div class="mt-1 flex items-center gap-3">
-              <input
-                type="range"
-                id="radius-slider"
-                min="0"
-                max="160"
-                value="60"
-                step="1"
-                class="slider-filled"
-              />
-              <input
-                id="radius-value"
-                type="text"
-                value="60px"
-                class="w-12 bg-transparent text-right font-mono text-sm text-indigo-400 outline-none"
-              />
-            </div>
-          </div>
-
           <!-- Amount slider -->
           <div class="min-w-0 flex-1">
             <label class="text-xs tracking-wider text-zinc-500 uppercase"
@@ -96,48 +54,9 @@
     </div>
 
     <div class="mx-auto max-w-5xl px-4 pt-8">
-      <!-- Combined Section: Overlay + Math Explorer side by side -->
       <section class="mb-16">
-        <div class="mb-6 flex flex-col gap-6 md:flex-row">
-          <!-- Left: Overlay Comparison -->
-          <div class="min-w-0 flex-1">
-            <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
-              CSS Overlay
-            </h3>
-            <div class="relative aspect-square w-64">
-              <!-- Circle overlay (red) -->
-              <div
-                id="overlay-box-circle"
-                class="absolute inset-0 border-2 border-red-500"
-                style="border-radius: 0; border-top-right-radius: 60px"
-              ></div>
-              <!-- Squircle overlay (blue) -->
-              <div
-                id="overlay-box-squircle"
-                class="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10"
-                style="
-                  border-radius: 0;
-                  border-top-right-radius: 78px;
-                  corner-shape: superellipse(1.5);
-                "
-              ></div>
-              <!-- Legend -->
-              <div class="absolute top-3 right-3 space-y-1 text-right text-xs">
-                <div class="text-red-500">● circular</div>
-                <div class="text-indigo-500">● squircle</div>
-              </div>
-            </div>
-            <!-- Readout -->
-            <div class="mt-3 space-y-0.5 font-mono text-xs text-zinc-500">
-              <div>circle r: <span id="readout-circle-r" class="text-red-400">60</span>px</div>
-              <div>
-                squircle r: <span id="readout-squircle-r" class="text-indigo-400">78</span>px
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Math Explorer SVG -->
-          <div class="min-w-0 flex-1">
+        <div class="mb-6">
+          <div>
             <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
               Math Explorer
             </h3>
@@ -208,6 +127,28 @@
         <div class="flex flex-col gap-8 lg:flex-row">
           <!-- Left: Controls + Preview -->
           <div class="min-w-0 flex-1">
+            <!-- Radius slider -->
+            <div class="mb-4">
+              <label class="text-xs tracking-wider text-zinc-500 uppercase">Border Radius</label>
+              <div class="mt-1 flex items-center gap-3">
+                <input
+                  type="range"
+                  id="radius-slider"
+                  min="0"
+                  max="160"
+                  value="60"
+                  step="1"
+                  class="slider-filled"
+                />
+                <input
+                  id="radius-value"
+                  type="text"
+                  value="60px"
+                  class="w-12 bg-transparent text-right font-mono text-sm text-indigo-400 outline-none"
+                />
+              </div>
+            </div>
+
             <!-- Mode radio -->
             <fieldset class="mb-6">
               <legend class="mb-2 text-xs tracking-wider text-zinc-500 uppercase">

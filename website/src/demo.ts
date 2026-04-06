@@ -11,26 +11,8 @@ import {
 
 const radiusSlider = document.getElementById("radius-slider") as HTMLInputElement;
 const exponentSlider = document.getElementById("exponent-slider") as HTMLInputElement;
-const correctionToggle = document.getElementById("correction-toggle")!;
-const toggleTrack = document.getElementById("toggle-track")!;
-const toggleKnob = document.getElementById("toggle-knob")!;
-
 const radiusValue = document.getElementById("radius-value") as HTMLInputElement;
 const exponentValue = document.getElementById("exponent-value") as HTMLInputElement;
-
-let correctionOn = true;
-
-correctionToggle.addEventListener("click", () => {
-  correctionOn = !correctionOn;
-  correctionToggle.setAttribute("aria-checked", String(correctionOn));
-  toggleTrack.className = correctionOn
-    ? "w-11 h-6 bg-indigo-600 rounded-full relative transition-colors"
-    : "w-11 h-6 bg-zinc-700 rounded-full relative transition-colors";
-  toggleKnob.className = correctionOn
-    ? "absolute top-0.5 left-[1.375rem] w-5 h-5 bg-white rounded-full transition-all"
-    : "absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-all";
-  update();
-});
 
 radiusSlider.addEventListener("input", () => {
   radiusValue.value = `${radiusSlider.value}px`;
@@ -59,25 +41,7 @@ exponentValue.addEventListener("change", () => {
   updateGenerator();
 });
 
-// ── Section 1: Overlay Comparison ──
-
-const circleBox = document.getElementById("overlay-box-circle")!;
-const squircleBox = document.getElementById("overlay-box-squircle")!;
-const readoutCircleR = document.getElementById("readout-circle-r")!;
-const readoutSquircleR = document.getElementById("readout-squircle-r")!;
-
-function updateOverlay(r: number, cssN: number, mathN: number): void {
-  const squircleR = correctionOn ? correctedRadius(r, mathN) : r;
-
-  circleBox.style.borderTopRightRadius = `${r}px`;
-  squircleBox.style.borderTopRightRadius = `${squircleR.toFixed(1)}px`;
-  squircleBox.style.setProperty("corner-shape", `superellipse(${cssN})`);
-
-  readoutCircleR.textContent = String(r);
-  readoutSquircleR.textContent = squircleR.toFixed(1);
-}
-
-// ── Section 2: Interactive Math Explorer ──
+// ── Math Explorer ──
 
 const svgEl = document.getElementById("math-svg")!;
 const NS = "http://www.w3.org/2000/svg";
@@ -154,13 +118,15 @@ function arcToSvg(mathX: number, mathY: number, arcR: number): { x: number; y: n
   return { x: cornerX - arcR + mathX, y: cornerY + arcR - mathY };
 }
 
-function updateMathSvg(r: number, cssN: number, mathN: number): void {
-  const maxR = BOX;
-  const clampedR = Math.min(r, maxR);
-  const corrR = Math.min(correctedRadius(clampedR, mathN), maxR);
+function updateMathSvg(cssN: number, mathN: number): void {
+  // Auto-scale: find r so the largest curve exactly fills the box
+  const corrFactor = correctedRadius(1, mathN);
+  const largestFactor = Math.max(1, corrFactor);
+  const r = BOX / largestFactor;
+  const corrR = correctedRadius(r, mathN);
 
   // Circle
-  const cArc = circleArcPoints(clampedR).map((p) => arcToSvg(p.x, p.y, clampedR));
+  const cArc = circleArcPoints(r).map((p) => arcToSvg(p.x, p.y, r));
   circlePath.setAttribute(
     "d",
     `M ${cornerX} ${PAD + BOX} L ${cArc[0]!.x} ${cArc[0]!.y} ` +
@@ -169,7 +135,7 @@ function updateMathSvg(r: number, cssN: number, mathN: number): void {
   );
 
   // Superellipse at same radius
-  const sArc = superellipsePoints(clampedR, mathN).map((p) => arcToSvg(p.x, p.y, clampedR));
+  const sArc = superellipsePoints(r, mathN).map((p) => arcToSvg(p.x, p.y, r));
   superPath.setAttribute(
     "d",
     `M ${cornerX} ${PAD + BOX} L ${sArc[0]!.x} ${sArc[0]!.y} ` +
@@ -210,15 +176,15 @@ function updateMathSvg(r: number, cssN: number, mathN: number): void {
 
   // Readouts
   document.getElementById("formula-n")!.textContent = mathN.toFixed(1);
-  document.getElementById("formula-r")!.textContent = String(r);
-  document.getElementById("formula-result")!.textContent = correctedRadius(r, mathN).toFixed(1);
+  document.getElementById("formula-r")!.textContent = r.toFixed(1);
+  document.getElementById("formula-result")!.textContent = corrR.toFixed(1);
 
-  const prc = perceivedRadius(clampedR, clampedR, 2);
-  const prs = perceivedRadius(clampedR, clampedR, mathN);
-  const prCorr = perceivedRadius(clampedR, corrR, mathN);
+  const prc = perceivedRadius(r, r, 2);
+  const prs = perceivedRadius(r, r, mathN);
+  const prCorr = perceivedRadius(r, corrR, mathN);
 
-  document.getElementById("radius-circle")!.textContent = `${clampedR}px`;
-  document.getElementById("radius-superellipse")!.textContent = `${clampedR}px`;
+  document.getElementById("radius-circle")!.textContent = `${r.toFixed(1)}px`;
+  document.getElementById("radius-superellipse")!.textContent = `${r.toFixed(1)}px`;
   document.getElementById("radius-corrected")!.textContent = `${corrR.toFixed(1)}px`;
 
   document.getElementById("bevel-circle")!.textContent = `${prc.toFixed(1)}px`;
@@ -241,8 +207,7 @@ function update(): void {
   radiusValue.value = `${r}px`;
   exponentValue.value = String(cssN);
 
-  updateOverlay(r, cssN, mathN);
-  updateMathSvg(r, cssN, mathN);
+  updateMathSvg(cssN, mathN);
 }
 
 // ── Section 3: Code Generator ──
