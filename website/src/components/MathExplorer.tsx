@@ -17,10 +17,13 @@ interface MathExplorerProps {
 
 const BOX = 180;
 const PAD = 10;
+const PAD_EXTRA = 20; // extra padding on top and right for serifs/labels
 const cornerX = PAD + BOX; // 190
 const cornerY = PAD; // 10
 const DASH = "4 3";
 const DASH_PERIOD = 7;
+const SERIF_LEN = 14;
+const SERIF_W = 1;
 
 function arcToSvg(mathX: number, mathY: number, arcR: number) {
   return { x: cornerX - arcR + mathX, y: cornerY + arcR - mathY };
@@ -196,7 +199,10 @@ export default function MathExplorer({
       </div>
 
       {/* SVG visualization */}
-      <svg viewBox={`0 0 ${PAD * 2 + BOX} ${PAD * 2 + BOX}`} className="w-full max-w-md">
+      <svg
+        viewBox={`${PAD} ${PAD - PAD_EXTRA} ${BOX + PAD_EXTRA} ${BOX + PAD_EXTRA}`}
+        className="w-full max-w-md"
+      >
         <defs>
           <clipPath id="clip-circle">
             <path d={circleClip} />
@@ -209,7 +215,7 @@ export default function MathExplorer({
           </clipPath>
         </defs>
 
-        {/* Circle arc */}
+        {/* Circle arc — painted first (bottom), serifs fully inward, edge-aligned outward */}
         {showRoundedProp && (
           <g>
             <path
@@ -221,22 +227,28 @@ export default function MathExplorer({
               strokeDashoffset={0}
               clipPath="url(#clip-circle)"
             />
-            <circle
-              cx={circleSvg[0]!.x}
-              cy={circleSvg[0]!.y}
-              r={2}
-              style={{ fill: "var(--color-rounded-border)" }}
+            {/* Right junction: inward, inner stroke edge at junction */}
+            <line
+              x1={circleSvg[0]!.x}
+              y1={circleSvg[0]!.y - SERIF_W / 2}
+              x2={circleSvg[0]!.x - SERIF_LEN}
+              y2={circleSvg[0]!.y - SERIF_W / 2}
+              style={{ stroke: "var(--color-rounded-border)" }}
+              strokeWidth={SERIF_W}
             />
-            <circle
-              cx={circleSvg[circleSvg.length - 1]!.x}
-              cy={circleSvg[circleSvg.length - 1]!.y}
-              r={2}
-              style={{ fill: "var(--color-rounded-border)" }}
+            {/* Top junction: inward, inner stroke edge at junction */}
+            <line
+              x1={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
+              y1={circleSvg[circleSvg.length - 1]!.y}
+              x2={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
+              y2={circleSvg[circleSvg.length - 1]!.y + SERIF_LEN}
+              style={{ stroke: "var(--color-rounded-border)" }}
+              strokeWidth={SERIF_W}
             />
           </g>
         )}
 
-        {/* Superellipse */}
+        {/* Superellipse — painted second, serifs fully outward, edge-aligned inward */}
         {showSuperellipseProp && (
           <g>
             <path
@@ -248,26 +260,28 @@ export default function MathExplorer({
               strokeDashoffset={-DASH_PERIOD / 3}
               clipPath="url(#clip-super)"
             />
-            <circle
-              cx={superSvg[0]!.x}
-              cy={superSvg[0]!.y}
-              r={3.5}
-              fill="none"
+            {/* Right junction: outward, inner stroke edge at junction */}
+            <line
+              x1={superSvg[0]!.x}
+              y1={superSvg[0]!.y - SERIF_W / 2}
+              x2={superSvg[0]!.x + SERIF_LEN}
+              y2={superSvg[0]!.y - SERIF_W / 2}
               style={{ stroke: "var(--color-squircle-border)" }}
-              strokeWidth={1}
+              strokeWidth={SERIF_W}
             />
-            <circle
-              cx={superSvg[superSvg.length - 1]!.x}
-              cy={superSvg[superSvg.length - 1]!.y}
-              r={3.5}
-              fill="none"
+            {/* Top junction: outward, inner stroke edge at junction */}
+            <line
+              x1={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
+              y1={superSvg[superSvg.length - 1]!.y}
+              x2={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
+              y2={superSvg[superSvg.length - 1]!.y - SERIF_LEN}
               style={{ stroke: "var(--color-squircle-border)" }}
-              strokeWidth={1}
+              strokeWidth={SERIF_W}
             />
           </g>
         )}
 
-        {/* Corrected superellipse */}
+        {/* Corrected superellipse — painted last (top), serifs centered */}
         {showCorrectedProp && (
           <g>
             <path
@@ -279,20 +293,56 @@ export default function MathExplorer({
               strokeDashoffset={(-2 * DASH_PERIOD) / 3}
               clipPath="url(#clip-corr)"
             />
-            <circle
-              cx={corrSvg[0]!.x}
-              cy={corrSvg[0]!.y}
-              r={5.5}
-              fill="none"
+            {/* Right junction: centered, inner stroke edge at junction */}
+            <line
+              x1={corrSvg[0]!.x + SERIF_LEN / 2}
+              y1={corrSvg[0]!.y - SERIF_W / 2}
+              x2={corrSvg[0]!.x - SERIF_LEN / 2}
+              y2={corrSvg[0]!.y - SERIF_W / 2}
               style={{ stroke: "var(--color-squircle-adjusted-border)" }}
+              strokeWidth={SERIF_W}
+            />
+            {/* Black end caps on right serif */}
+            <line
+              x1={corrSvg[0]!.x + SERIF_LEN / 2}
+              y1={corrSvg[0]!.y - SERIF_W / 2 - 4}
+              x2={corrSvg[0]!.x + SERIF_LEN / 2}
+              y2={corrSvg[0]!.y - SERIF_W / 2 + 4}
+              stroke="black"
               strokeWidth={1}
             />
-            <circle
-              cx={corrSvg[corrSvg.length - 1]!.x}
-              cy={corrSvg[corrSvg.length - 1]!.y}
-              r={5.5}
-              fill="none"
+            <line
+              x1={corrSvg[0]!.x - SERIF_LEN / 2}
+              y1={corrSvg[0]!.y - SERIF_W / 2 - 4}
+              x2={corrSvg[0]!.x - SERIF_LEN / 2}
+              y2={corrSvg[0]!.y - SERIF_W / 2 + 4}
+              stroke="black"
+              strokeWidth={1}
+            />
+            {/* Top junction: centered, inner stroke edge at junction */}
+            <line
+              x1={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2}
+              y1={corrSvg[corrSvg.length - 1]!.y - SERIF_LEN / 2}
+              x2={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2}
+              y2={corrSvg[corrSvg.length - 1]!.y + SERIF_LEN / 2}
               style={{ stroke: "var(--color-squircle-adjusted-border)" }}
+              strokeWidth={SERIF_W}
+            />
+            {/* Black end caps on top serif */}
+            <line
+              x1={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2 - 4}
+              y1={corrSvg[corrSvg.length - 1]!.y - SERIF_LEN / 2}
+              x2={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2 + 4}
+              y2={corrSvg[corrSvg.length - 1]!.y - SERIF_LEN / 2}
+              stroke="black"
+              strokeWidth={1}
+            />
+            <line
+              x1={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2 - 4}
+              y1={corrSvg[corrSvg.length - 1]!.y + SERIF_LEN / 2}
+              x2={corrSvg[corrSvg.length - 1]!.x + SERIF_W / 2 + 4}
+              y2={corrSvg[corrSvg.length - 1]!.y + SERIF_LEN / 2}
+              stroke="black"
               strokeWidth={1}
             />
           </g>
