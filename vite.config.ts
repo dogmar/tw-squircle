@@ -1,8 +1,9 @@
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  plugins: [    tailwindcss(),
+  ],
   run: {
     tasks: {
       build: {
@@ -55,25 +56,5 @@ export default defineConfig({
   },
   staged: {
     "*": "vp check --fix",
-  },
-  fmt: {
-    ignorePatterns: [],
-    sortTailwindcss: {
-      stylesheet: "./docs/styles.css",
-    },
-  },
-  lint: {
-    plugins: ["typescript", "unicorn", "oxc"],
-    categories: {
-      correctness: "error",
-    },
-    rules: {},
-    env: {
-      builtin: true,
-    },
-    options: {
-      typeAware: true,
-      typeCheck: true,
-    },
   },
 });

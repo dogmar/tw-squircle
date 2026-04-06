@@ -1,4 +1,13 @@
-export const DEFAULT_AMT = 2;
+export const DEFAULT_AMT = 2 as const;
+export const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt" as const;
+export const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, ${DEFAULT_AMT})` as const;
+
+export const getCornerShape = (varName: string = DEFAULT_AMOUNT_VAR_NAME) =>
+  `superellipse(var(${varName}, ${DEFAULT_AMT}))` as const;
+
+export function correctedRadius(radius: string, amt: string = DEFAULT_AMT_CSS): string {
+  return `calc(${radius} * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * ${amt}))))` as const;
+}
 
 type SectionComment = { comment: string };
 type VariantEntry = string[] | SectionComment;

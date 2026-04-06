@@ -65,10 +65,13 @@ async function compileCss(candidates: string[]): Promise<string> {
   return extractUtilitiesLayer(compiler.build(candidates));
 }
 
-async function compilePlugin(candidates: string[]): Promise<string> {
+async function compilePlugin(candidates: string[], pluginBlock = ""): Promise<string> {
+  const pluginDecl = pluginBlock
+    ? `@plugin "./plugin.ts" {\n${pluginBlock}\n}`
+    : `@plugin "./plugin.ts";`;
   const input = `
 @import "tailwindcss";
-@plugin "./plugin.ts";
+${pluginDecl}
 `;
   const compiler = await compile(input, {
     base: srcDir,
@@ -170,4 +173,46 @@ describe("plugin.ts utilities", () => {
       expect(css).toMatchSnapshot();
     });
   }
+});
+
+describe("plugin.ts custom options", () => {
+  it("custom prefix changes class names", async () => {
+    const css = await compilePlugin(["se-md"], "prefix: se;");
+    expect(css).toContain(".se-md");
+    expect(css).toContain("border-radius");
+    expect(css).toContain("corner-shape");
+  });
+
+  it("custom prefix works for side variants", async () => {
+    const css = await compilePlugin(["se-t-md"], "prefix: se;");
+    expect(css).toContain(".se-t-md");
+    expect(css).toContain("border-top-left-radius");
+    expect(css).toContain("border-top-right-radius");
+  });
+
+  it("custom prefix works for amt utility", async () => {
+    const css = await compilePlugin(["se-amt-[3]"], "prefix: se;");
+    expect(css).toContain(".se-amt-\\[3\\]");
+    expect(css).toContain("corner-shape: superellipse");
+  });
+
+  it("custom amt-var changes the CSS variable name", async () => {
+    const css = await compilePlugin(["squircle-md"], "amt-var: --se-amt;");
+    expect(css).toContain("var(--se-amt, 2)");
+    expect(css).not.toContain("var(--squircle-amt");
+  });
+
+  it("custom amt-var applies to amt utility", async () => {
+    const css = await compilePlugin(["squircle-amt-[3]"], "amt-var: --se-amt;");
+    expect(css).toContain("--se-amt: 3");
+    expect(css).toContain("superellipse(var(--se-amt))");
+  });
+
+  it("both options together", async () => {
+    const opts = "prefix: round;\namt-var: --round-amt;";
+    const css = await compilePlugin(["round-md"], opts);
+    expect(css).toContain(".round-md");
+    expect(css).toContain("var(--round-amt, 2)");
+    expect(css).toContain("superellipse(var(--round-amt, 2))");
+  });
 });

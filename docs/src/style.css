@@ -1,0 +1,2 @@
+@import "tailwindcss";
+@plugin "../../src/plugin.ts";

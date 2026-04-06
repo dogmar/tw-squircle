@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@klinking/tw-squircle — Interactive Demo</title>
-    <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="min-h-screen bg-zinc-950 text-zinc-100">
     <div class="mx-auto max-w-5xl px-4 py-12">
@@ -192,6 +191,162 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Code Generator Section -->
+      <section class="mb-16">
+        <h2 class="mb-4 text-xl font-bold">Code Generator</h2>
+        <p class="mb-6 text-sm text-zinc-400">
+          Adjust each corner radius and the superellipse exponent to preview the shape, then copy
+          the generated CSS or Tailwind classes.
+        </p>
+
+        <div class="flex flex-col gap-8 lg:flex-row">
+          <!-- Left: Controls + Preview -->
+          <div class="min-w-0 flex-1">
+            <!-- Corner radius inputs -->
+            <div class="mb-4 grid grid-cols-2 gap-3">
+              <div>
+                <label for="gen-tl" class="text-xs tracking-wider text-zinc-500 uppercase"
+                  >Top Left</label
+                >
+                <input
+                  id="gen-tl"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value="16"
+                  class="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1 font-mono text-sm text-zinc-100"
+                />
+              </div>
+              <div>
+                <label for="gen-tr" class="text-xs tracking-wider text-zinc-500 uppercase"
+                  >Top Right</label
+                >
+                <input
+                  id="gen-tr"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value="16"
+                  class="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1 font-mono text-sm text-zinc-100"
+                />
+              </div>
+              <div>
+                <label for="gen-bl" class="text-xs tracking-wider text-zinc-500 uppercase"
+                  >Bottom Left</label
+                >
+                <input
+                  id="gen-bl"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value="16"
+                  class="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1 font-mono text-sm text-zinc-100"
+                />
+              </div>
+              <div>
+                <label for="gen-br" class="text-xs tracking-wider text-zinc-500 uppercase"
+                  >Bottom Right</label
+                >
+                <input
+                  id="gen-br"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value="16"
+                  class="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1 font-mono text-sm text-zinc-100"
+                />
+              </div>
+            </div>
+
+            <!-- Exponent -->
+            <div class="mb-4">
+              <label for="gen-exponent" class="text-xs tracking-wider text-zinc-500 uppercase"
+                >Superellipse Exponent</label
+              >
+              <div class="mt-1 flex items-center gap-3">
+                <input
+                  type="range"
+                  id="gen-exponent"
+                  min="1"
+                  max="8"
+                  value="2"
+                  step="0.1"
+                  class="flex-1 accent-amber-500"
+                />
+                <span
+                  id="gen-exponent-value"
+                  class="w-10 text-right font-mono text-sm text-amber-400"
+                  >2</span
+                >
+              </div>
+            </div>
+
+            <!-- Mode radio -->
+            <fieldset class="mb-6">
+              <legend class="mb-2 text-xs tracking-wider text-zinc-500 uppercase">
+                Corner Mode
+              </legend>
+              <div class="flex gap-4">
+                <label class="flex cursor-pointer items-center gap-2 text-sm">
+                  <input type="radio" name="gen-mode" value="round" class="accent-indigo-500" />
+                  <span>Round</span>
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    name="gen-mode"
+                    value="superellipse"
+                    class="accent-indigo-500"
+                  />
+                  <span>Superellipse</span>
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    name="gen-mode"
+                    value="corrected"
+                    checked
+                    class="accent-indigo-500"
+                  />
+                  <span>Corrected Superellipse</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Preview -->
+            <div
+              class="flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 p-8"
+            >
+              <div id="gen-preview" class="h-40 w-56 bg-indigo-500"></div>
+            </div>
+          </div>
+
+          <!-- Right: Generated code -->
+          <div class="min-w-0 flex-1 space-y-4">
+            <div>
+              <label class="mb-1 block text-xs tracking-wider text-zinc-500 uppercase">CSS</label>
+              <textarea
+                id="gen-css"
+                readonly
+                rows="14"
+                class="w-full resize-none rounded border border-zinc-700 bg-zinc-900 p-3 font-mono text-xs leading-relaxed text-zinc-300 select-all focus:border-indigo-500 focus:outline-none"
+              ></textarea>
+            </div>
+            <div>
+              <label class="mb-1 block text-xs tracking-wider text-zinc-500 uppercase"
+                >Tailwind Classes</label
+              >
+              <textarea
+                id="gen-tw"
+                readonly
+                rows="3"
+                class="w-full resize-none rounded border border-zinc-700 bg-zinc-900 p-3 font-mono text-xs leading-relaxed text-zinc-300 select-all focus:border-indigo-500 focus:outline-none"
+              ></textarea>
+            </div>
           </div>
         </div>
       </section>

@@ -33,9 +33,9 @@
     }
   },
   "scripts": {
-    "dev": "vite docs",
+    "dev": "vp dev docs",
     "prepare": "vp config",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "vp run build"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
@@ -43,9 +43,9 @@
     "oxlint": "^1.58.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "vite": "catalog:",
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.15",
     "vite-plus": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.15"
   },
   "peerDependencies": {
     "tailwind-merge": ">=2.0.0",

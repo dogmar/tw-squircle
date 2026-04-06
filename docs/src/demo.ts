@@ -1,3 +1,4 @@
+import "./style.css";
 import {
   correctedRadius,
   superellipsePoints,
@@ -207,3 +208,151 @@ function update(): void {
 
 // Initialize
 update();
+
+// ── Section 3: Code Generator ──
+
+const genTL = document.getElementById("gen-tl") as HTMLInputElement;
+const genTR = document.getElementById("gen-tr") as HTMLInputElement;
+const genBL = document.getElementById("gen-bl") as HTMLInputElement;
+const genBR = document.getElementById("gen-br") as HTMLInputElement;
+const genExponent = document.getElementById("gen-exponent") as HTMLInputElement;
+const genExponentValue = document.getElementById("gen-exponent-value")!;
+const genPreview = document.getElementById("gen-preview")!;
+const genStyle = document.createElement("style");
+document.head.appendChild(genStyle);
+const genCss = document.getElementById("gen-css") as HTMLTextAreaElement;
+const genTw = document.getElementById("gen-tw") as HTMLTextAreaElement;
+
+function getGenMode(): string {
+  const checked = document.querySelector<HTMLInputElement>('input[name="gen-mode"]:checked');
+  return checked?.value ?? "corrected";
+}
+
+// Map pixel values to closest Tailwind radius token
+const TW_RADII: [string, number][] = [
+  ["none", 0],
+  ["xs", 2],
+  ["sm", 4],
+  ["", 4],
+  ["md", 6],
+  ["lg", 8],
+  ["xl", 12],
+  ["2xl", 16],
+  ["3xl", 24],
+  ["4xl", 32],
+  ["full", 9999],
+];
+
+function closestTwRadius(px: number): string {
+  let best = TW_RADII[0]!;
+  let bestDist = Math.abs(px - best[1]);
+  for (const entry of TW_RADII) {
+    const dist = Math.abs(px - entry[1]);
+    if (dist < bestDist) {
+      best = entry;
+      bestDist = dist;
+    }
+  }
+  // If no close match, use arbitrary value
+  if (bestDist > 1) return `[${px}px]`;
+  return best[0];
+}
+
+function twRadiusClass(prefix: string, token: string): string {
+  if (token === "none") return `${prefix}-none`;
+  if (token === "") return prefix;
+  if (token.startsWith("[")) return `${prefix}-${token}`;
+  return `${prefix}-${token}`;
+}
+
+function updateGenerator(): void {
+  const tl = Number(genTL.value);
+  const tr = Number(genTR.value);
+  const bl = Number(genBL.value);
+  const br = Number(genBR.value);
+  const cssK = Number(genExponent.value);
+  const mathN = Math.pow(2, cssK);
+  const mode = getGenMode();
+
+  genExponentValue.textContent = String(cssK);
+
+  // Compute corrected radii
+  const corrTL = correctedRadius(tl, mathN);
+  const corrTR = correctedRadius(tr, mathN);
+  const corrBL = correctedRadius(bl, mathN);
+  const corrBR = correctedRadius(br, mathN);
+
+  // Generate CSS declarations
+  const allSame = tl === tr && tr === br && br === bl;
+  let cssBody: string;
+
+  if (mode === "round") {
+    cssBody = allSame
+      ? `border-radius: ${tl}px;`
+      : `border-radius: ${tl}px ${tr}px ${br}px ${bl}px;`;
+  } else if (mode === "superellipse") {
+    const radius = allSame
+      ? `border-radius: ${tl}px;`
+      : `border-radius: ${tl}px ${tr}px ${br}px ${bl}px;`;
+    cssBody = `${radius}\ncorner-shape: superellipse(${cssK});`;
+  } else {
+    const fallback = allSame
+      ? `border-radius: ${tl}px;`
+      : `border-radius: ${tl}px ${tr}px ${br}px ${bl}px;`;
+    const corrected = allSame
+      ? `  border-radius: ${corrTL.toFixed(1)}px;`
+      : `  border-radius: ${corrTL.toFixed(1)}px ${corrTR.toFixed(1)}px ${corrBR.toFixed(1)}px ${corrBL.toFixed(1)}px;`;
+    cssBody = [
+      fallback,
+      `@supports (corner-shape: superellipse()) {`,
+      corrected,
+      `  corner-shape: superellipse(${cssK});`,
+      `}`,
+    ].join("\n");
+  }
+
+  // Apply to preview via <style> element and show in textarea
+  genPreview.removeAttribute("style");
+  genStyle.textContent = `#gen-preview { ${cssBody} }`;
+  genCss.value = cssBody;
+
+  // Generate Tailwind classes
+  let twClasses: string[];
+
+  if (mode === "round") {
+    if (allSame) {
+      twClasses = [twRadiusClass("rounded", closestTwRadius(tl))];
+    } else {
+      twClasses = [
+        twRadiusClass("rounded-tl", closestTwRadius(tl)),
+        twRadiusClass("rounded-tr", closestTwRadius(tr)),
+        twRadiusClass("rounded-br", closestTwRadius(br)),
+        twRadiusClass("rounded-bl", closestTwRadius(bl)),
+      ];
+    }
+  } else {
+    const amtClass = cssK !== 2 ? `squircle-amt-[${cssK}]` : "";
+    if (allSame) {
+      twClasses = [twRadiusClass("squircle", closestTwRadius(tl))];
+    } else {
+      twClasses = [
+        twRadiusClass("squircle-tl", closestTwRadius(tl)),
+        twRadiusClass("squircle-tr", closestTwRadius(tr)),
+        twRadiusClass("squircle-br", closestTwRadius(br)),
+        twRadiusClass("squircle-bl", closestTwRadius(bl)),
+      ];
+    }
+    if (amtClass) twClasses.push(amtClass);
+  }
+  genTw.value = twClasses.join(" ");
+}
+
+genTL.addEventListener("input", updateGenerator);
+genTR.addEventListener("input", updateGenerator);
+genBL.addEventListener("input", updateGenerator);
+genBR.addEventListener("input", updateGenerator);
+genExponent.addEventListener("input", updateGenerator);
+document.querySelectorAll('input[name="gen-mode"]').forEach((el) => {
+  el.addEventListener("change", updateGenerator);
+});
+updateGenerator();

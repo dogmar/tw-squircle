@@ -1,25 +1,38 @@
 import plugin from "tailwindcss/plugin";
-import { DEFAULT_AMT, usesIntermediateVar, variantEntries } from "./variants";
+import {
+  DEFAULT_AMOUNT_VAR_NAME,
+  correctedRadius,
+  getCornerShape,
+  usesIntermediateVar,
+  variantEntries,
+} from "./variants";
 
-type PluginWithConfig = ReturnType<typeof plugin>;
+export interface SquirclePluginOptions {
+  /** CSS custom property name for the superellipse amount (default: "--squircle-amt") */
+  amtVar?: string;
+  /** @plugin CSS alias for amtVar */
+  "amt-var"?: string;
+  /** Class name prefix for utilities (default: "squircle") */
+  prefix?: string;
+}
 
-const correctedRadius = (value: string): string =>
-  `calc(${value} * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * var(--squircle-amt, ${DEFAULT_AMT})))))`;
-
-const cornerShape = `superellipse(var(--squircle-amt, ${DEFAULT_AMT}))`;
-
-const supportsCornerShape: string = "@supports (corner-shape: superellipse())";
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme }) => {
+const squircle = plugin.withOptions<SquirclePluginOptions>((options = {}) =>
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  ({ matchUtilities, theme }) => {
+  const amtVar = options.amtVar ?? options["amt-var"] ?? DEFAULT_AMOUNT_VAR_NAME;
+  const prefix = options.prefix ?? "squircle";
   const radiusValues = theme("borderRadius");
+
+  const amtCss = `var(${amtVar}, 2)`;
+  const cornerShape = getCornerShape(amtVar);
+  const supportsCornerShape: string = "@supports (corner-shape: superellipse())";
 
   matchUtilities(
     {
-      "squircle-amt": (value: string) => ({
-        "--squircle-amt": value,
+      [`${prefix}-amt`]: (value: string) => ({
+        [amtVar]: value,
         [supportsCornerShape]: {
-          "corner-shape": "superellipse(var(--squircle-amt))",
+          "corner-shape": `superellipse(var(${amtVar}))`,
         },
       }),
     },
@@ -27,7 +40,7 @@ const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme })
   );
 
   for (const [suffix, props] of variantEntries()) {
-    const name = suffix ? `squircle-${suffix}` : "squircle";
+    const name = suffix ? `${prefix}-${suffix}` : prefix;
 
     if (usesIntermediateVar(suffix)) {
       matchUtilities(
@@ -35,7 +48,7 @@ const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme })
           [name]: (value: string) => ({
             ...Object.fromEntries(props.map((p) => [p, value])),
             [supportsCornerShape]: {
-              "--squircle-r": correctedRadius(value),
+              "--squircle-r": correctedRadius(value, amtCss),
               ...Object.fromEntries(props.map((p) => [p, "var(--squircle-r)"])),
               "corner-shape": cornerShape,
             },
@@ -52,7 +65,7 @@ const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme })
               [prop]: value,
             };
             result[supportsCornerShape] = {
-              [prop]: correctedRadius(value),
+              [prop]: correctedRadius(value, amtCss),
               "corner-shape": cornerShape,
             };
             return result;
@@ -62,7 +75,6 @@ const squirclePlugin: Parameters<typeof plugin>[0] = ({ matchUtilities, theme })
       );
     }
   }
-};
+});
 
-const squircle: PluginWithConfig = plugin(squirclePlugin);
 export default squircle;
