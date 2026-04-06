@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import MathExplorer from "../components/MathExplorer";
+import GuidedExplorer from "../components/GuidedExplorer";
 import CodeGenerator from "../components/CodeGenerator";
 ---
 
@@ -29,13 +29,7 @@ import CodeGenerator from "../components/CodeGenerator";
         <h3 class="mb-3 text-sm font-medium tracking-wider text-zinc-500 uppercase">
           Math Explorer
         </h3>
-        <MathExplorer
-          client:load
-          showRounded={true}
-          showSuperellipse={true}
-          showCorrected={true}
-          measureArc="superellipse"
-        />
+        <GuidedExplorer client:load />
       </section>
 
       <section class="mb-16">
