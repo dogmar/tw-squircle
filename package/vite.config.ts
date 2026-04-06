@@ -13,12 +13,6 @@ export default defineConfig({
     },
     format: "esm",
     dts: true,
-  },
-  run: {
-    tasks: {
-      "generate:css": {
-        dependsOn: ["build"],
-      },
-    },
+    onSuccess: "tsx scripts/generate-squircle-css.ts",
   },
 });
