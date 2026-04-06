@@ -78,8 +78,8 @@ function generateCss(): string {
 }
 
 const output = generateCss();
-const generatedDir = join(__dirname, "..", "generated");
-mkdirSync(generatedDir, { recursive: true });
-const outPath = join(generatedDir, "squircle.css");
+const distDir = join(__dirname, "..", "dist");
+mkdirSync(distDir, { recursive: true });
+const outPath = join(distDir, "squircle.css");
 writeFileSync(outPath, output);
 console.log(`Generated ${outPath}`);
