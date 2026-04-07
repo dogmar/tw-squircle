@@ -7,33 +7,48 @@ import {
   type SpringOptions,
 } from "framer-motion";
 import { SlideStepProvider } from "./Animate";
-import ExplorerGraphic, { type GraphicState } from "./ExplorerGraphic";
-import SlideControls from "./SlideControls";
+import ExplorerGraphic, { type ArcStyle, type GraphicState } from "./ExplorerGraphic";
 import FreeExplorer from "./FreeExplorer";
 import { slides } from "./slides";
 
+const HIDDEN_ARC: ArcStyle = { visible: false, showFill: false, showOutline: false };
+
 const INITIAL_GRAPHIC_STATE: GraphicState = {
-  showRounded: false,
-  showSuperellipse: false,
+  arcRounded: { ...HIDDEN_ARC },
+  arcSuperellipse: { ...HIDDEN_ARC },
   correctionAmount: 0,
   amount: 1.5,
   showRefLine: false,
   showMeasurement: false,
   measureArc: undefined,
-  showFill: true,
-  showStroke: false,
   zoom: 1,
 };
 
+function mergeGraphicState(state: GraphicState, partial: Partial<GraphicState>): GraphicState {
+  const merged = { ...state, ...partial };
+  // Deep merge arc style objects
+  if (partial.arcRounded) {
+    merged.arcRounded = { ...state.arcRounded, ...partial.arcRounded };
+  }
+  if (partial.arcSuperellipse) {
+    merged.arcSuperellipse = { ...state.arcSuperellipse, ...partial.arcSuperellipse };
+  }
+  return merged;
+}
+
 function computeGraphicState(slideIndex: number, stepIndex: number): GraphicState {
-  let state = { ...INITIAL_GRAPHIC_STATE };
+  let state: GraphicState = {
+    ...INITIAL_GRAPHIC_STATE,
+    arcRounded: { ...INITIAL_GRAPHIC_STATE.arcRounded },
+    arcSuperellipse: { ...INITIAL_GRAPHIC_STATE.arcSuperellipse },
+  };
   for (let si = 0; si <= slideIndex; si++) {
     const slide = slides[si]!;
     const maxStep = si === slideIndex ? stepIndex : slide.steps.length - 1;
     for (let sti = 0; sti <= maxStep; sti++) {
       const step = slide.steps[sti];
       if (step?.graphic) {
-        state = { ...state, ...step.graphic };
+        state = mergeGraphicState(state, step.graphic);
       }
     }
   }
@@ -130,66 +145,36 @@ export default function GuidedExplorer() {
     }
   }, [mode, stepIndex, slideIndex]);
 
-  // Compute total steps across all slides for the progress indicator
-  const totalStepsAcrossSlides = useMemo(
-    () => slides.reduce((acc, s) => acc + s.steps.length, 0),
-    [],
-  );
-  const currentAbsoluteStep = useMemo(() => {
-    let count = 0;
-    for (let si = 0; si < slideIndex; si++) {
-      count += slides[si]!.steps.length;
-    }
-    count += stepIndex;
-    return count;
-  }, [slideIndex, stepIndex]);
-
   // Graphic state to pass to ExplorerGraphic
   const graphicStateForDisplay: GraphicState =
     mode === "explore" && exploreState
       ? exploreState
       : { ...targetState, amount: animatedAmount, correctionAmount: animatedCorrection };
 
-  const canGoBack = mode === "explore" || slideIndex > 0 || stepIndex > 0;
-  const canGoNext = mode !== "explore";
-
-  const stepDef = currentSlide.steps[stepIndex];
-  const nextLabel = isLastStepOfLastSlide ? "Explore" : (stepDef?.nextLabel ?? "Next");
-
   return (
     <div className="grid gap-8 md:grid-cols-2 md:items-start">
       {/* Left: graphic */}
-      <ExplorerGraphic {...graphicStateForDisplay} />
-
+      <div className="md:-mt-[10%]">
+        <ExplorerGraphic {...graphicStateForDisplay} />
+      </div>
       {/* Right: content panel */}
-      <div className="flex min-h-[300px] flex-col">
+      <div className="flex h-full min-h-[500px] flex-col md:h-full md:min-h-0">
         {mode === "tour" ? (
           <>
-            <div className="flex-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={slideIndex}
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <SlideStepProvider step={stepIndex} onAmountChange={setUserAmount}>
+            <div className="flex-1 grow">
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.div key={slideIndex} exit={{}} transition={{ duration: 0.5 }}>
+                  <SlideStepProvider
+                    step={stepIndex}
+                    onAmountChange={setUserAmount}
+                    onNext={handleNext}
+                    onBack={handleBack}
+                  >
                     {currentSlide.content}
                   </SlideStepProvider>
                 </motion.div>
               </AnimatePresence>
             </div>
-
-            <SlideControls
-              onBack={handleBack}
-              onNext={handleNext}
-              canGoBack={canGoBack}
-              canGoNext={canGoNext}
-              currentStep={currentAbsoluteStep}
-              totalSteps={totalStepsAcrossSlides}
-              nextLabel={nextLabel}
-            />
           </>
         ) : (
           <>
@@ -199,7 +184,7 @@ export default function GuidedExplorer() {
                 <FreeExplorer
                   graphicState={exploreState}
                   onGraphicStateChange={(partial) =>
-                    setExploreState((prev) => (prev ? { ...prev, ...partial } : prev))
+                    setExploreState((prev) => (prev ? mergeGraphicState(prev, partial) : prev))
                   }
                 />
               )}

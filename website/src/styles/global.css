@@ -20,15 +20,24 @@
 
 @layer components {
   .type-step-heading {
+    line-height: 1.1;
     font-size: 3rem;
     font-weight: 700;
     color: var(--color-zinc-100);
+    text-box-edge: cap alphabetic;
+    text-box-trim: trim-both;
   }
 
   .type-step-body {
     font-size: 1.5rem;
     font-weight: 400;
     color: var(--color-zinc-300);
+  }
+
+  .type-button {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--color-zinc-100);
   }
 
   .slider-filled {

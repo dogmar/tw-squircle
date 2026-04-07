@@ -8,16 +8,22 @@ import {
   superellipsePoints,
 } from "../math";
 
+export interface ArcStyle {
+  visible: boolean;
+  showFill: boolean;
+  showOutline: boolean;
+}
+
 export interface GraphicState {
-  showRounded: boolean;
-  showSuperellipse: boolean;
+  arcRounded: ArcStyle;
+  arcSuperellipse: ArcStyle;
   correctionAmount: number; // 0 = uncorrected superellipse, 1 = fully corrected
   amount: number;
   showRefLine: boolean;
   showMeasurement: boolean;
   measureArc?: "rounded" | "superellipse" | "corrected";
-  showFill: boolean;
-  showStroke: boolean;
+  measureMode?: "perceived" | "radius";
+  measureAngle?: "diagonal" | "edge"; // default: "diagonal"
   zoom: number;
 }
 
@@ -45,15 +51,15 @@ function buildCurvePath(points: { x: number; y: number }[]) {
 }
 
 export default function ExplorerGraphic({
-  showRounded,
-  showSuperellipse,
+  arcRounded,
+  arcSuperellipse,
   amount,
   showRefLine,
   showMeasurement,
   measureArc,
+  measureMode = "radius",
+  measureAngle = "diagonal",
   correctionAmount,
-  showFill,
-  showStroke,
   zoom,
 }: GraphicState) {
   const id = useId();
@@ -61,7 +67,7 @@ export default function ExplorerGraphic({
   const clipSuper = `${id}-clip-super`;
 
   // Track discrete measurement state changes to decide when to animate vs instant update
-  const measureKey = `${showRefLine}-${showMeasurement}-${measureArc}`;
+  const measureKey = `${showRefLine}-${showMeasurement}-${measureArc}-${measureMode}-${measureAngle}`;
   const prevMeasureKey = useRef(measureKey);
   const isMorphing = prevMeasureKey.current !== measureKey;
   prevMeasureKey.current = measureKey;
@@ -97,14 +103,53 @@ export default function ExplorerGraphic({
     const superAboveCircle = superPerceived <= circlePerceived;
 
     // Measurement line data
-    let measure: { endX: number; endY: number; ratio: number; cssVar: string } | null = null;
+    let measure: {
+      x1: number;
+      y1: number;
+      endX: number;
+      endY: number;
+      ratio: number;
+      cssVar: string;
+    } | null = null;
     if (measureArc) {
       const arcR = measureArc === "corrected" ? superR : r;
       const n = measureArc === "rounded" ? 2 : mathN;
-      const d = arcR * (1 - Math.pow(2, -1 / n));
-      const endX = cornerX - d;
-      const endY = cornerY + d;
-      const lineLen = Math.sqrt(2) * d;
+      let x1: number, y1: number, endX: number, endY: number, lineLen: number;
+      const centerX = cornerX - arcR;
+      const centerY = cornerY + arcR;
+      if (measureMode === "radius") {
+        x1 = centerX;
+        y1 = centerY;
+        if (measureAngle === "edge") {
+          // Horizontal: from arc center to right edge
+          endX = centerX + arcR;
+          endY = centerY;
+        } else {
+          // Diagonal: from arc center outward along 45°
+          endX = centerX + arcR / Math.SQRT2;
+          endY = centerY - arcR / Math.SQRT2;
+        }
+        lineLen = arcR;
+      } else {
+        // Perceived mode
+        const d = arcR * (1 - Math.pow(2, -1 / n));
+        if (measureAngle === "edge") {
+          // Horizontal: from right edge inward by the junction offset
+          const junctionX = cornerX - arcR + superellipsePoints(arcR, n, 1)[0]!.x;
+          x1 = cornerX;
+          y1 = cornerY + arcR;
+          endX = junctionX;
+          endY = cornerY + arcR;
+          lineLen = cornerX - junctionX;
+        } else {
+          // Diagonal: from corner to curve apex
+          x1 = cornerX;
+          y1 = cornerY;
+          endX = cornerX - d;
+          endY = cornerY + d;
+          lineLen = Math.sqrt(2) * d;
+        }
+      }
       const ratio = lineLen / r;
       const cssVar =
         measureArc === "rounded"
@@ -112,7 +157,7 @@ export default function ExplorerGraphic({
           : measureArc === "superellipse"
             ? "--color-squircle-border"
             : "--color-adjusted-border";
-      measure = { endX, endY, ratio, cssVar };
+      measure = { x1, y1, endX, endY, ratio, cssVar };
     }
 
     return {
@@ -135,7 +180,7 @@ export default function ExplorerGraphic({
         y2: cornerY + r - r / Math.SQRT2,
       },
     };
-  }, [amount, measureArc, zoom, correctionAmount]);
+  }, [amount, measureArc, measureMode, measureAngle, zoom, correctionAmount]);
 
   const {
     circleSvg,
@@ -176,46 +221,49 @@ export default function ExplorerGraphic({
         const superellipseGroup = (
           <motion.g
             key="super"
-            animate={{ opacity: showSuperellipse ? 1 : 0 }}
+            animate={{ opacity: arcSuperellipse.visible ? 1 : 0 }}
             transition={{ duration: 0.4 }}
           >
             <g style={{ color: superStrokeColor, transition: "color 0.5s" }}>
-              {showFill && (
+              {/* Fill — crossfades in/out */}
+              <motion.path
+                d={`${superPath} L ${PAD} ${PAD + BOX} Z`}
+                style={{ fill: superFillColor, transition: "fill 0.5s" }}
+                stroke="none"
+                animate={{ opacity: arcSuperellipse.showFill ? 1 : 0 }}
+                transition={{ duration: 0.4 }}
+              />
+              {/* Stroke — crossfades in/out */}
+              <motion.g
+                animate={{ opacity: arcSuperellipse.showOutline ? 1 : 0 }}
+                transition={{ duration: 0.4 }}
+              >
                 <path
-                  d={`${superPath} L ${PAD} ${PAD + BOX} Z`}
-                  style={{ fill: superFillColor, transition: "fill 0.5s" }}
-                  stroke="none"
+                  d={superPath}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeDasharray={DASH}
+                  strokeDashoffset={-DASH_PERIOD / 3}
+                  clipPath={`url(#${clipSuper})`}
                 />
-              )}
-              {showStroke && (
-                <>
-                  <path
-                    d={superPath}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                    strokeDasharray={DASH}
-                    strokeDashoffset={-DASH_PERIOD / 3}
-                    clipPath={`url(#${clipSuper})`}
-                  />
-                  <line
-                    x1={superSvg[0]!.x}
-                    y1={superSvg[0]!.y - SERIF_W / 2}
-                    x2={superSvg[0]!.x + SERIF_LEN}
-                    y2={superSvg[0]!.y - SERIF_W / 2}
-                    stroke="currentColor"
-                    strokeWidth={SERIF_W}
-                  />
-                  <line
-                    x1={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
-                    y1={superSvg[superSvg.length - 1]!.y}
-                    x2={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
-                    y2={superSvg[superSvg.length - 1]!.y - SERIF_LEN}
-                    stroke="currentColor"
-                    strokeWidth={SERIF_W}
-                  />
-                </>
-              )}
+                <line
+                  x1={superSvg[0]!.x}
+                  y1={superSvg[0]!.y - SERIF_W / 2}
+                  x2={superSvg[0]!.x + SERIF_LEN}
+                  y2={superSvg[0]!.y - SERIF_W / 2}
+                  stroke="currentColor"
+                  strokeWidth={SERIF_W}
+                />
+                <line
+                  x1={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
+                  y1={superSvg[superSvg.length - 1]!.y}
+                  x2={superSvg[superSvg.length - 1]!.x + SERIF_W / 2}
+                  y2={superSvg[superSvg.length - 1]!.y - SERIF_LEN}
+                  stroke="currentColor"
+                  strokeWidth={SERIF_W}
+                />
+              </motion.g>
             </g>
           </motion.g>
         );
@@ -223,45 +271,48 @@ export default function ExplorerGraphic({
         const circleGroup = (
           <motion.g
             key="circle"
-            animate={{ opacity: showRounded ? 1 : 0 }}
+            animate={{ opacity: arcRounded.visible ? 1 : 0 }}
             transition={{ duration: 0.4 }}
           >
-            {showFill && (
+            {/* Fill — crossfades in/out */}
+            <motion.path
+              d={`${circlePath} L ${PAD} ${PAD + BOX} Z`}
+              style={{ fill: "var(--color-rounded-fill)" }}
+              stroke="none"
+              animate={{ opacity: arcRounded.showFill ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+            />
+            {/* Stroke — crossfades in/out */}
+            <motion.g
+              animate={{ opacity: arcRounded.showOutline ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+            >
               <path
-                d={`${circlePath} L ${PAD} ${PAD + BOX} Z`}
-                style={{ fill: "var(--color-rounded-fill)" }}
-                stroke="none"
+                d={circlePath}
+                fill="none"
+                style={{ stroke: "var(--color-rounded-border)" }}
+                strokeWidth={3}
+                strokeDasharray={DASH}
+                strokeDashoffset={0}
+                clipPath={`url(#${clipCircle})`}
               />
-            )}
-            {showStroke && (
-              <>
-                <path
-                  d={circlePath}
-                  fill="none"
-                  style={{ stroke: "var(--color-rounded-border)" }}
-                  strokeWidth={3}
-                  strokeDasharray={DASH}
-                  strokeDashoffset={0}
-                  clipPath={`url(#${clipCircle})`}
-                />
-                <line
-                  x1={circleSvg[0]!.x}
-                  y1={circleSvg[0]!.y - SERIF_W / 2}
-                  x2={circleSvg[0]!.x - SERIF_LEN}
-                  y2={circleSvg[0]!.y - SERIF_W / 2}
-                  style={{ stroke: "var(--color-rounded-border)" }}
-                  strokeWidth={SERIF_W}
-                />
-                <line
-                  x1={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
-                  y1={circleSvg[circleSvg.length - 1]!.y}
-                  x2={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
-                  y2={circleSvg[circleSvg.length - 1]!.y + SERIF_LEN}
-                  style={{ stroke: "var(--color-rounded-border)" }}
-                  strokeWidth={SERIF_W}
-                />
-              </>
-            )}
+              <line
+                x1={circleSvg[0]!.x}
+                y1={circleSvg[0]!.y - SERIF_W / 2}
+                x2={circleSvg[0]!.x - SERIF_LEN}
+                y2={circleSvg[0]!.y - SERIF_W / 2}
+                style={{ stroke: "var(--color-rounded-border)" }}
+                strokeWidth={SERIF_W}
+              />
+              <line
+                x1={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
+                y1={circleSvg[circleSvg.length - 1]!.y}
+                x2={circleSvg[circleSvg.length - 1]!.x + SERIF_W / 2}
+                y2={circleSvg[circleSvg.length - 1]!.y + SERIF_LEN}
+                style={{ stroke: "var(--color-rounded-border)" }}
+                strokeWidth={SERIF_W}
+              />
+            </motion.g>
           </motion.g>
         );
 
@@ -283,12 +334,20 @@ export default function ExplorerGraphic({
         const visible = showRefLine || (showMeasurement && measure);
         // When measurement is active, use measurement coords; otherwise use reference line
         const useMeasure = showMeasurement && measure;
-        const x1 = useMeasure ? cornerX : refLine.x1;
-        const y1 = useMeasure ? cornerY : refLine.y1;
+        const x1 = useMeasure ? measure!.x1 : refLine.x1;
+        const y1 = useMeasure ? measure!.y1 : refLine.y1;
         const x2 = useMeasure ? measure!.endX : refLine.x2;
         const y2 = useMeasure ? measure!.endY : refLine.y2;
         const serifLen = useMeasure ? 24 : 5;
         const label = useMeasure ? measure!.ratio.toFixed(2) : "1";
+
+        // Compute perpendicular direction for serif
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy) || 1;
+        const perpX = -dy / len; // perpendicular unit vector
+        const perpY = dx / len;
+
         const midX = (x1 + x2) / 2;
         const midY = (y1 + y2) / 2;
         const svgW = PAD * 2 + BOX;
@@ -318,10 +377,10 @@ export default function ExplorerGraphic({
               {/* Perpendicular serif at the end point */}
               <motion.line
                 animate={{
-                  x1: x2 - serifLen / Math.SQRT2,
-                  y1: y2 - serifLen / Math.SQRT2,
-                  x2: x2 + serifLen / Math.SQRT2,
-                  y2: y2 + serifLen / Math.SQRT2,
+                  x1: x2 - serifLen * perpX,
+                  y1: y2 - serifLen * perpY,
+                  x2: x2 + serifLen * perpX,
+                  y2: y2 + serifLen * perpY,
                 }}
                 transition={morphTransition}
                 stroke="currentColor"

@@ -8,8 +8,7 @@ interface FreeExplorerProps {
 }
 
 export default function FreeExplorer({ graphicState, onGraphicStateChange }: FreeExplorerProps) {
-  const { amount, showRounded, showSuperellipse, correctionAmount, showFill, showStroke } =
-    graphicState;
+  const { amount, arcRounded, arcSuperellipse, correctionAmount } = graphicState;
   const [amountText, setAmountText] = useState(String(amount));
 
   const stats = useMemo(() => {
@@ -79,16 +78,22 @@ export default function FreeExplorer({ graphicState, onGraphicStateChange }: Fre
         <label className="flex cursor-pointer items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={showRounded}
-            onChange={(e) => onGraphicStateChange({ showRounded: e.target.checked })}
+            checked={arcRounded.visible}
+            onChange={(e) =>
+              onGraphicStateChange({ arcRounded: { ...arcRounded, visible: e.target.checked } })
+            }
           />
           <span style={{ color: "var(--color-rounded-border)" }}>Circle</span>
         </label>
         <label className="flex cursor-pointer items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={showSuperellipse}
-            onChange={(e) => onGraphicStateChange({ showSuperellipse: e.target.checked })}
+            checked={arcSuperellipse.visible}
+            onChange={(e) =>
+              onGraphicStateChange({
+                arcSuperellipse: { ...arcSuperellipse, visible: e.target.checked },
+              })
+            }
           />
           <span style={{ color: "var(--color-squircle-border)" }}>Superellipse</span>
         </label>
@@ -99,23 +104,6 @@ export default function FreeExplorer({ graphicState, onGraphicStateChange }: Fre
             onChange={(e) => onGraphicStateChange({ correctionAmount: e.target.checked ? 1 : 0 })}
           />
           <span style={{ color: "var(--color-adjusted-border)" }}>Corrected</span>
-        </label>
-        <span className="mx-1 text-zinc-700">|</span>
-        <label className="flex cursor-pointer items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showFill}
-            onChange={(e) => onGraphicStateChange({ showFill: e.target.checked })}
-          />
-          <span className="text-zinc-400">Fill</span>
-        </label>
-        <label className="flex cursor-pointer items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showStroke}
-            onChange={(e) => onGraphicStateChange({ showStroke: e.target.checked })}
-          />
-          <span className="text-zinc-400">Stroke</span>
         </label>
       </div>
 
