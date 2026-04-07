@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import {
   AnimatePresence,
   motion,
   useMotionValue,
+  usePresence,
   useSpring,
   type SpringOptions,
 } from "framer-motion";
@@ -10,6 +11,23 @@ import { SlideStepProvider } from "./Animate";
 import ExplorerGraphic, { type ArcStyle, type GraphicState } from "./ExplorerGraphic";
 import FreeExplorer from "./FreeExplorer";
 import { slides } from "./slides";
+
+const SLIDE_EXIT_DURATION = 600; // ms — how long old slide stays alive for child exits
+
+const SlideWrapper = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  function SlideWrapper({ children }, ref) {
+    const [isPresent, safeToRemove] = usePresence();
+
+    useEffect(() => {
+      if (!isPresent) {
+        const timeout = setTimeout(safeToRemove, SLIDE_EXIT_DURATION);
+        return () => clearTimeout(timeout);
+      }
+    }, [isPresent, safeToRemove]);
+
+    return <div ref={ref}>{children}</div>;
+  },
+);
 
 const HIDDEN_ARC: ArcStyle = { visible: false, showFill: false, showOutline: false };
 
@@ -162,8 +180,8 @@ export default function GuidedExplorer() {
         {mode === "tour" ? (
           <>
             <div className="flex-1 grow">
-              <AnimatePresence initial={false} mode="popLayout">
-                <motion.div key={slideIndex} exit={{}} transition={{ duration: 0.5 }}>
+              <AnimatePresence initial={false}>
+                <SlideWrapper key={slideIndex}>
                   <SlideStepProvider
                     step={stepIndex}
                     onAmountChange={setUserAmount}
@@ -172,7 +190,7 @@ export default function GuidedExplorer() {
                   >
                     {currentSlide.content}
                   </SlideStepProvider>
-                </motion.div>
+                </SlideWrapper>
               </AnimatePresence>
             </div>
           </>
