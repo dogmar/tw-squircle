@@ -4,7 +4,7 @@ Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius corr
 
 [![npm version](https://img.shields.io/npm/v/@klinking/squircle.svg)](https://www.npmjs.com/package/@klinking/squircle)
 
-> **[Interactive Demo →](https://dogmar.github.io/tw-squircle)**
+> **[Interactive Demo →](https://dogmar.github.io/squircle)**
 
 ## Install
 
@@ -47,7 +47,7 @@ $$r' = r \cdot \frac{1 - 2^{-\frac{1}{2}}}{1 - 2^{-\frac{1}{n}}}$$
 
 where $n = 2^K$ and $K$ is the CSS `superellipse()` parameter.
 
-See the [interactive demo](https://dogmar.github.io/tw-squircle) for a visual explanation.
+See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
 
 ## Utilities
 

@@ -185,7 +185,7 @@ export const slides: Slide[] = [
         </Animate>
         <Animate inStep={2} outStep={3}>
           <SlideP>
-            <SlideCode>tw-squircle</SlideCode> applies this correction automatically. Just use the{" "}
+            Our <SlideCode>tw-utils</SlideCode> applies this correction automatically. Just use the{" "}
             <SlideCode>squircle-*</SlideCode> utilities as you would{" "}
             <SlideCode>rounded-*</SlideCode>, and the math is handled for you.
           </SlideP>

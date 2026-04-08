@@ -10,11 +10,11 @@
     "tailwind-plugin",
     "tailwindcss"
   ],
-  "homepage": "https://dogmar.github.io/tw-squircle",
+  "homepage": "https://dogmar.github.io/squircle",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dogmar/tw-squircle"
+    "url": "https://github.com/dogmar/squircle"
   },
   "files": [
     "dist"
