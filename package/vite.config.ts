@@ -16,8 +16,16 @@ export default defineConfig({
   },
   run: {
     tasks: {
+      "test:plugin": {
+        command: "vp test run tw-plugin",
+      },
+      "test:css": {
+        command: "vp test run squircle-css",
+        dependsOn: ["build"],
+      },
       test: {
-        command: "vp test run",
+        command: "echo 'All tests passed'",
+        dependsOn: ["test:plugin", "test:css"],
       },
       build: {
         command: "vp pack && tsx scripts/generate-squircle-css.ts",
