@@ -4,12 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ready": "vp fmt && vp lint && vp run -r test && vp run -r build",
+    "ready": "vp fmt && vp lint && vp run -r test",
     "dev": "vp dev",
     "prepare": "vp config"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "catalog:",
+    "@semantic-release/git": "catalog:",
     "@types/node": "catalog:",
+    "conventional-changelog-conventionalcommits": "catalog:",
+    "semantic-release": "catalog:",
     "vite-plus": "catalog:"
   },
   "engines": {

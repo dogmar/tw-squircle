@@ -1,12 +1,12 @@
 {
-  "name": "tw-squircle-react-basic-demo",
+  "name": "squircle-react-basic-demo",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite"
   },
   "dependencies": {
-    "@klinking/tw-squircle": "latest",
+    "@klinking/squircle": "latest",
     "react": "^19",
     "react-dom": "^19"
   },

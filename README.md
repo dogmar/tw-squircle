@@ -1,15 +1,15 @@
-# @klinking/tw-squircle
+# @klinking/squircle
 
 Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius correction.
 
-[![npm version](https://img.shields.io/npm/v/@klinking/tw-squircle.svg)](https://www.npmjs.com/package/@klinking/tw-squircle)
+[![npm version](https://img.shields.io/npm/v/@klinking/squircle.svg)](https://www.npmjs.com/package/@klinking/squircle)
 
-> **[Interactive Demo →](https://dogmar.github.io/tw-squircle)**
+> **[Interactive Demo →](https://dogmar.github.io/squircle)**
 
 ## Install
 
 ```bash
-npm install @klinking/tw-squircle
+npm install @klinking/squircle
 ```
 
 ## Usage
@@ -17,19 +17,19 @@ npm install @klinking/tw-squircle
 **CSS import** (recommended):
 
 ```css
-@import "@klinking/tw-squircle/squircle.css";
+@import "@klinking/squircle/tw-utils.css";
 ```
 
 **JS plugin** (alternative):
 
 ```css
-@plugin "@klinking/tw-squircle/plugin";
+@plugin "@klinking/squircle/tw-plugin";
 ```
 
 **tw-merge** (optional — if you use tailwind-merge):
 
 ```js
-import { squircleMergeConfig } from "@klinking/tw-squircle/merge";
+import { squircleMergeConfig } from "@klinking/squircle/tw-merge-cfg";
 import { extendTailwindMerge } from "tailwind-merge";
 
 const twMerge = extendTailwindMerge(squircleMergeConfig, {
@@ -47,7 +47,7 @@ $$r' = r \cdot \frac{1 - 2^{-\frac{1}{2}}}{1 - 2^{-\frac{1}{n}}}$$
 
 where $n = 2^K$ and $K$ is the CSS `superellipse()` parameter.
 
-See the [interactive demo](https://dogmar.github.io/tw-squircle) for a visual explanation.
+See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
 
 ## Utilities
 
@@ -72,9 +72,9 @@ All `squircle-*` utilities accept the same values as `rounded-*` (`sm`, `md`, `l
 
 If you'd rather not add a dependency, copy the source directly:
 
-### squircle.css
+### tw-utils.css
 
-<!-- BEGIN:dist/squircle.css -->
+<!-- BEGIN:dist/tw-utils.css -->
 
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
@@ -281,11 +281,11 @@ If you'd rather not add a dependency, copy the source directly:
 }
 ```
 
-<!-- END:dist/squircle.css -->
+<!-- END:dist/tw-utils.css -->
 
-### plugin.js
+### tw-plugin.js
 
-<!-- BEGIN:dist/plugin.mjs -->
+<!-- BEGIN:dist/tw-plugin.mjs -->
 
 ```ts
 import plugin from "tailwindcss/plugin";
@@ -558,11 +558,11 @@ const squircle: PluginWithConfig = plugin(squirclePlugin);
 export default squircle;
 ```
 
-<!-- END:dist/plugin.mjs -->
+<!-- END:dist/tw-plugin.mjs -->
 
-### merge.js
+### tw-merge-cfg.js
 
-<!-- BEGIN:dist/merge.mjs -->
+<!-- BEGIN:dist/tw-merge-cfg.mjs -->
 
 ```ts
 const allRoundedGroups: string[] = [
@@ -613,7 +613,7 @@ export const squircleMergeConfig = {
 } as const;
 ```
 
-<!-- END:dist/merge.mjs -->
+<!-- END:dist/tw-merge-cfg.mjs -->
 
 ## Browser Support
 
