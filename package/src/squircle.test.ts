@@ -55,7 +55,7 @@ function extractUtilitiesLayer(css: string): string {
 async function compileCss(candidates: string[]): Promise<string> {
   const input = `
 @import "tailwindcss";
-@import "../dist/squircle.css";
+@import "../dist/tw-utils.css";
 `;
   const compiler = await compile(input, {
     base: srcDir,
@@ -67,8 +67,8 @@ async function compileCss(candidates: string[]): Promise<string> {
 
 async function compilePlugin(candidates: string[], pluginBlock = ""): Promise<string> {
   const pluginDecl = pluginBlock
-    ? `@plugin "./plugin.ts" {\n${pluginBlock}\n}`
-    : `@plugin "./plugin.ts";`;
+    ? `@plugin "./tw-plugin.ts" {\n${pluginBlock}\n}`
+    : `@plugin "./tw-plugin.ts";`;
   const input = `
 @import "tailwindcss";
 ${pluginDecl}
