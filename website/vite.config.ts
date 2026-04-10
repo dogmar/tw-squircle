@@ -7,6 +7,10 @@ export default defineConfig({
         command: "astro dev",
         dependsOn: ["@klinking/squircle#build"],
       },
+      build: {
+        command: "astro build",
+        dependsOn: ["@klinking/squircle#build"],
+      },
     },
   },
 });

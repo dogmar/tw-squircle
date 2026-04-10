@@ -14,7 +14,7 @@ export default defineConfig({
       },
       ready: {
         command: "echo 'All checks passed'",
-        dependsOn: ["fmt", "lint", "@klinking/squircle#test"],
+        dependsOn: ["fmt", "lint", "@klinking/squircle#test", "website#build"],
       },
       "sync-readme": {
         command: "bash scripts/sync-readme.sh",
