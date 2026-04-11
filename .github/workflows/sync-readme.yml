@@ -1,7 +1,7 @@
 name: Sync README code blocks
 
 on:
-  push:
+  pull_request:
     branches: [main]
     paths:
       - package/src/**
@@ -9,14 +9,19 @@ on:
       - package/vite.config.ts
       - scripts/sync-readme.sh
       - vite.config.ts
+      - README.md
+
+permissions:
+  contents: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: voidzero-dev/setup-vp@v1
         with:
@@ -28,12 +33,14 @@ jobs:
       - name: Run sync script
         run: vp run sync-readme
 
-      - name: Commit if changed
+      - name: Commit and push if changed
         run: |
+          git diff --quiet README.md && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet README.md || {
-            git add README.md
-            git commit -m "docs: sync README code blocks [skip ci]"
-            git push
+          git add README.md
+          git commit -m "docs: sync README code blocks [skip ci]"
+          git push || {
+            echo "::error::README is out of sync and could not push fix to branch"
+            exit 1
           }
