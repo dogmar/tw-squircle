@@ -10,6 +10,7 @@ on:
       - scripts/sync-readme.sh
       - vite.config.ts
       - README.md
+  workflow_dispatch:
 
 permissions:
   contents: write
