@@ -68,20 +68,6 @@ const twMerge = extendTailwindMerge(squircleMergeConfig, {
 });
 ```
 
-## What it does
-
-CSS `corner-shape: superellipse()` makes corners follow a superellipse curve instead of a circular arc. But at the same `border-radius` value, superellipse corners look visually smaller. This package auto-adjusts the radius so `squircle-lg` visually matches `rounded-lg`.
-
-The adjusted radius is wrapped in a `@supports (corner-shape: superellipse(2))` rule, so browsers without support simply use the original `border-radius` unchanged. This means your corners will look visually consistent regardless of browser — no sudden changes when support lands, no broken fallbacks. Since browser support for `corner-shape` is still not universal, this gives you consistent visual border-radius forever.
-
-The correction formula:
-
-$$r' = r \cdot \frac{1 - 2^{-\frac{1}{2}}}{1 - 2^{-\frac{1}{n}}}$$
-
-where $n = 2^K$ and $K$ is the CSS `superellipse()` parameter.
-
-See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
-
 ## Utilities
 
 | Utility          | Equivalent     | Description                       |
@@ -211,6 +197,43 @@ Arguments:
 The parameters are deliberately untyped so relative units (`em`, `rem`, container queries, etc.) resolve at the call site, not at function-definition time — matching how CSS custom properties normally propagate.
 
 **Heads up:** this doesn't supply the uncorrected fallback for browsers that have `@function` but lack `corner-shape`. By the time `@function` support is widespread, `corner-shape` probably will be too, so ¯\\\_(ツ)\_/¯.
+
+## How the radius correction works
+
+A superellipse at the same outer `border-radius` as a circular arc pokes further into the corner. The fix is to scale the radius up by some maths, so the _apparent_ roundness matches what you'd get from `rounded-*`. That is, the distance from the corner to the maximum pokage will match for both the superelliptical corner and the circular corner.
+
+The correction formula:
+
+$$r' = r \cdot \frac{1 - 2^{-\frac{1}{2}}}{1 - 2^{-\frac{1}{n}}}$$
+
+where $n = 2^K$ and $K$ is the value you pass to `superellipse(K)` (same K as [`squircle-amt-*`](#what-does-squircle-amt--control)).
+
+### Worked example: `squircle-md`
+
+With the default Tailwind `--radius-md: 0.375rem` and the default `--squircle-amt: 2` (so `K = 2`, `n = 4`):
+
+$$r' = 0.375\text{rem} \cdot \frac{1 - 2^{-1/2}}{1 - 2^{-1/4}} \approx 0.375\text{rem} \cdot 1.840 \approx 0.690\text{rem}$$
+
+So `.squircle-md` compiles to roughly:
+
+```css
+.squircle-md {
+  border-radius: 0.375rem; /* fallback: matches rounded-md visually */
+  @supports (corner-shape: superellipse(2)) {
+    --squircle-r: calc(0.375rem * (1 - pow(2, -0.5)) / (1 - pow(2, -0.25)));
+    border-radius: var(--squircle-r); /* ≈ 0.690rem, compensated */
+    corner-shape: superellipse(2);
+  }
+}
+```
+
+The browser does the actual `calc()` at render time using native [`pow()` and `calc()`](https://caniuse.com/?search=pow) — there's no build-time float math in the emitted CSS.
+
+### Why it works in both branches
+
+In browsers without `corner-shape` support, only the plain `border-radius: 0.375rem` declaration applies — visually identical to `rounded-md`. In browsers with support, the larger corrected radius applies and the superellipse shape is drawn, so the two footprints converge on the same visual size. Your layout looks the same before and after `corner-shape` lands — no pop, no redesign.
+
+See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
 
 ## Copy/Paste
 
