@@ -269,7 +269,7 @@ Both are first-class. The copy/paste block is right below, and it's honestly may
 
 **Copy/paste if:**
 
-- Honestly, I recommend it. Let's be real, I'm probably not going to make many updates to this library, and why expose yourself to some future security risk when I die and Vladimir Jong Il trojan-horses this thing.
+- Honestly, I recommend it. Let's be real, I'm probably not going to make many updates to this library, and why expose yourself to some future security risk when I die and Vladimir Jong Un trojan-horses this thing.
 - You want zero runtime/build dependencies.
 - You want to tweak the formula, the utility names, or the value validation yourself.
 - You're not sure you'll want updates — the CSS is short and the math won't change.
