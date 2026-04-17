@@ -252,14 +252,43 @@ The Tailwind utilities depend on rows 1–4 and row 6. Only `corner-shape` itsel
 
 The corrected radius is wrapped in `@supports (corner-shape: superellipse(2))`, so browsers that don't know about `corner-shape` skip the entire block and fall back to the plain `border-radius` declaration above — no `corner-shape`, no squircle, just a regular rounded corner at your original theme radius. Ship `squircle-*` today without worrying about Safari: unsupported browsers show `rounded-*`-equivalent corners now, and the squircle shape lights up automatically when support lands, without any visual jump in the already-shipped radius.
 
-## Copy/Paste
+## Why "squircle"?
 
-If you'd rather not add a dependency, copy the source directly:
+Cuz ain't no one, not even a clanker want to type supperlips over and over again. See? I couldn't even type it _once_ without mussin' it up.
 
-### tw-utils.css
+## Alternatives considered
+
+- **Just use `corner-shape: superellipse()` directly.** Works fine, but at the same `border-radius` the corners read as smaller than `rounded-*` — so swapping one for the other breaks your visual hierarchy and you end up eyeballing compensation for every component. This package is that eyeballing, solved once.
+- **JS squircle libraries** (e.g. Figma Squircle). SVG-based, not native CSS, they carry a runtime cost and don't compose with Tailwind's utility model.
+- **Write the `@utility` block in your own project.** Totally reasonable — it's ~100 lines of CSS. See ["Should you install or copy/paste?"](#should-you-install-or-copypaste) for when that's the right call.
+- **Wait for `corner-shape` to land everywhere and skip the correction.** I mean, sure. You'll just need to get used to how `border-radius` effects superellipseseses. Go for it. Though if you keep using the border-radiuses you know and love, it makes it easier to do the math on getting nested corners to snug up nicely.
+
+## Should you install or copy/paste?
+
+Both are first-class. The copy/paste block is right below, and it's honestly maybe ~100 lines of CSS.
+
+**Copy/paste if:**
+
+- Honestly, I recommend it. Let's be real, I'm probably not going to make many updates to this library, and why expose yourself to some future security risk when I die and Vladimir Jong Il trojan-horses this thing.
+- You want zero runtime/build dependencies.
+- You want to tweak the formula, the utility names, or the value validation yourself.
+- You're not sure you'll want updates — the CSS is short and the math won't change.
+
+**Install if:**
+
+- You want upgrades when the formula tightens, the value validation changes, or the utility surface grows.
+- You want the JS plugin form (custom `prefix`, `amt-var`, `r-var`).
+- You use `tailwind-merge` and want the conflict config maintained for you.
+- You want the standalone [`squircle-radius()`](#css-function-squircle-radius) CSS function for non-Tailwind use.
+
+## Copy/paste source
+
+If you'd rather not add a dependency, copy the source directly. Click to expand each file.
+
+<details>
+<summary><strong><code>tw-utils.css</code></strong> — the Tailwind utilities</summary>
 
 <!-- BEGIN:dist/tw-utils.css -->
-
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -419,14 +448,15 @@ If you'd rather not add a dependency, copy the source directly:
   }
 }
 ```
-
 <!-- END:dist/tw-utils.css -->
 
-### tw-plugin.js
+</details>
+
+<details>
+<summary><strong><code>tw-plugin.mjs</code></strong> — the JS plugin</summary>
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-
-````js
+```js
 import plugin from "tailwindcss/plugin";
 const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt";
 const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, 2)`;
@@ -516,7 +546,10 @@ export { squircle as default };
 //# sourceMappingURL=tw-plugin.mjs.map```
 <!-- END:dist/tw-plugin.mjs -->
 
-### tw-merge-cfg.js
+</details>
+
+<details>
+<summary><strong><code>tw-merge-cfg.mjs</code></strong> — the tailwind-merge config</summary>
 
 <!-- BEGIN:dist/tw-merge-cfg.mjs -->
 ```js
@@ -569,6 +602,8 @@ export { squircleMergeConfig };
 
 //# sourceMappingURL=tw-merge-cfg.mjs.map```
 <!-- END:dist/tw-merge-cfg.mjs -->
+
+</details>
 
 ## License
 
