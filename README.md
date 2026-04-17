@@ -233,6 +233,25 @@ The adjusted radius is wrapped in a `@supports (corner-shape: superellipse(2))` 
 
 See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
 
+## Browser support & fallback strategy
+
+### Support matrix
+
+| Feature                                                                    | Used for                                       | Support                                                        |
+| -------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------- |
+| [`corner-shape: superellipse()`](https://caniuse.com/?search=corner-shape) | The squircle shape itself                      | New; fallback to plain `border-radius` in unsupported browsers |
+| [`@supports`](https://caniuse.com/css-supports-api)                        | Gating the correction                          | Universal for years                                            |
+| [`pow()` / `calc()`](https://caniuse.com/?search=pow)                      | The correction math                            | Widely supported (Safari 16.4+, Chrome 112+, Firefox 118+)     |
+| [Logical properties](https://caniuse.com/css-logical-props)                | `squircle-s/e/ss/se/es/ee-*`                   | Widely supported                                               |
+| [CSS `@function`](https://caniuse.com/?search=%40function)                 | Optional `squircle-radius()` helper            | Experimental; Chrome flag only                                 |
+| [CSS custom properties](https://caniuse.com/css-variables)                 | Theme tokens, `--squircle-amt`, `--squircle-r` | Universal                                                      |
+
+The Tailwind utilities depend on rows 1–4 and row 6. Only `corner-shape` itself is "new" — everything else is shipped broadly. The standalone `@function` helper is the only genuinely experimental piece.
+
+### Fallback strategy
+
+The corrected radius is wrapped in `@supports (corner-shape: superellipse(2))`, so browsers that don't know about `corner-shape` skip the entire block and fall back to the plain `border-radius` declaration above — no `corner-shape`, no squircle, just a regular rounded corner at your original theme radius. Ship `squircle-*` today without worrying about Safari: unsupported browsers show `rounded-*`-equivalent corners now, and the squircle shape lights up automatically when support lands, without any visual jump in the already-shipped radius.
+
 ## Copy/Paste
 
 If you'd rather not add a dependency, copy the source directly:
@@ -550,10 +569,6 @@ export { squircleMergeConfig };
 
 //# sourceMappingURL=tw-merge-cfg.mjs.map```
 <!-- END:dist/tw-merge-cfg.mjs -->
-
-## Browser Support
-
-`corner-shape: superellipse()` is a new CSS property. Check [caniuse](https://caniuse.com/?search=corner-shape) for current browser support. In unsupported browsers, the corners degrade gracefully to regular `border-radius` — the superellipse shape is simply ignored.
 
 ## License
 
