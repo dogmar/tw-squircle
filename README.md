@@ -179,11 +179,11 @@ Tailwind resolves the theme key, which reads your underlying CSS variable — yo
 
 If you installed via Path B, three options tune the emitted output:
 
-| Option    | Default            | Effect                                                           |
-| --------- | ------------------ | ---------------------------------------------------------------- |
-| `prefix`  | `"squircle"`       | Class prefix. `prefix: "sq"` → `sq-md`, `sq-t-lg`                |
+| Option    | Default            | Effect                                                             |
+| --------- | ------------------ | ------------------------------------------------------------------ |
+| `prefix`  | `"squircle"`       | Class prefix. `prefix: "sq"` → `sq-md`, `sq-t-lg`                  |
 | `amt-var` | `"--squircle-amt"` | CSS variable name for the `K` parameter passed to `superellipse()` |
-| `r-var`   | `"--squircle-r"`   | CSS variable name for the intermediate corrected-radius variable |
+| `r-var`   | `"--squircle-r"`   | CSS variable name for the intermediate corrected-radius variable   |
 
 All three are exposed as kebab-case inside the `@plugin` block and as camelCase (`amtVar`, `rVar`) when requiring the plugin from JavaScript.
 
