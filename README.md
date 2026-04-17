@@ -121,6 +121,72 @@ The value is the `K` parameter passed to `superellipse(K)`, which controls how s
 
 See the [MDN reference for `superellipse()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/superellipse) for the full spec.
 
+## Configuring theme tokens
+
+Everything that `squircle-*` and `squircle-amt-*` accept is driven by Tailwind's `@theme` block, so configuration is standard Tailwind — no special knobs.
+
+### Custom radius sizes
+
+Any `--radius-*` token you define works automatically:
+
+```css
+@theme {
+  --radius-hero: 2.5rem;
+  --radius-blob: 48px;
+}
+```
+
+```html
+<div class="squircle-hero">…</div>
+<div class="squircle-blob">…</div>
+```
+
+### Default superellipse amount
+
+`--squircle-amt` is a regular CSS custom property — set it anywhere it'll be in scope and it overrides the default of `2` for every `squircle-*` and `squircle-amt-*` utility beneath it:
+
+```css
+:root {
+  --squircle-amt: 3;
+}
+
+/* or scoped to a subtree: */
+.hero {
+  --squircle-amt: 2.5;
+}
+```
+
+Individual elements can still override with `squircle-amt-*` classes.
+
+### Referencing a runtime CSS variable
+
+Paren refs like `squircle-(--my-radius)` or `squircle-amt-(--my-amt)` are intentionally rejected (poor things). Tailwind can't distinguish them from unit-typo brackets like `squircle-amt-[1em]` at the validation level, so allowing one means allowing the other. Thread the var through a theme key instead (or, y'know, fork this repo, or tell me I'm wrong, and maybe I'll change):
+
+```css
+@theme {
+  --radius-hero: var(--hero-radius);
+  --squircle-amt-hero: var(--hero-squircle-amt);
+}
+```
+
+```html
+<div class="squircle-hero squircle-amt-hero">…</div>
+```
+
+Tailwind resolves the theme key, which reads your underlying CSS variable — you get the runtime indirection, the validator still catches typos.
+
+### JS plugin options
+
+If you installed via Path B, three options tune the emitted output:
+
+| Option    | Default            | Effect                                                           |
+| --------- | ------------------ | ---------------------------------------------------------------- |
+| `prefix`  | `"squircle"`       | Class prefix. `prefix: "sq"` → `sq-md`, `sq-t-lg`                |
+| `amt-var` | `"--squircle-amt"` | CSS variable name for the superellipse amount                    |
+| `r-var`   | `"--squircle-r"`   | CSS variable name for the intermediate corrected-radius variable |
+
+All three are exposed as kebab-case inside the `@plugin` block and as camelCase (`amtVar`, `rVar`) when requiring the plugin from JavaScript.
+
 ## Copy/Paste
 
 If you'd rather not add a dependency, copy the source directly:

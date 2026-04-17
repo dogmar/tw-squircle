@@ -120,6 +120,27 @@ describe("plugin.ts custom options", () => {
     expect(css).toContain("superellipse(var(--se-amt))");
   });
 
+  it("custom r-var changes the intermediate CSS variable name", async () => {
+    const css = await compilePlugin(["squircle-md"], "r-var: --se-r;");
+    expect(css).toContain("--se-r: calc(");
+    expect(css).toContain("border-radius: var(--se-r)");
+    expect(css).not.toContain("--squircle-r");
+  });
+
+  it("custom r-var applies to multi-prop side variants", async () => {
+    const css = await compilePlugin(["squircle-t-md"], "r-var: --se-r;");
+    expect(css).toContain("--se-r: calc(");
+    expect(css).toContain("border-top-left-radius: var(--se-r)");
+    expect(css).toContain("border-top-right-radius: var(--se-r)");
+  });
+
+  it("single-prop corner variants don't emit the intermediate var at all", async () => {
+    const css = await compilePlugin(["squircle-tl-md"], "r-var: --se-r;");
+    expect(css).not.toContain("--se-r");
+    expect(css).not.toContain("--squircle-r");
+    expect(css).toContain("border-top-left-radius: calc(");
+  });
+
   it("both options together", async () => {
     const opts = "prefix: round;\namt-var: --round-amt;";
     const css = await compilePlugin(["round-md"], opts);

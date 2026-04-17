@@ -1,5 +1,6 @@
 export const DEFAULT_AMT = 2 as const;
 export const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt" as const;
+export const DEFAULT_R_VAR_NAME = "--squircle-r" as const;
 export const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, ${DEFAULT_AMT})` as const;
 
 export const getCornerShape = (varName: string = DEFAULT_AMOUNT_VAR_NAME) =>

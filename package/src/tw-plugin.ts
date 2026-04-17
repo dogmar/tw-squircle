@@ -2,6 +2,7 @@ import plugin from "tailwindcss/plugin";
 import {
   DEFAULT_AMT,
   DEFAULT_AMOUNT_VAR_NAME,
+  DEFAULT_R_VAR_NAME,
   SUPPORTS_RULE,
   correctedRadius,
   getCornerShape,
@@ -14,6 +15,10 @@ export interface SquirclePluginOptions {
   amtVar?: string;
   /** @plugin CSS alias for amtVar */
   "amt-var"?: string;
+  /** CSS custom property name for the intermediate corrected radius (default: "--squircle-r") */
+  rVar?: string;
+  /** @plugin CSS alias for rVar */
+  "r-var"?: string;
   /** Class name prefix for utilities (default: "squircle") */
   prefix?: string;
 }
@@ -23,10 +28,12 @@ const squircle: ReturnType<typeof plugin.withOptions<SquirclePluginOptions>> =
     // eslint-disable-next-line @typescript-eslint/unbound-method
     ({ matchUtilities, theme }) => {
     const amtVar = options.amtVar ?? options["amt-var"] ?? DEFAULT_AMOUNT_VAR_NAME;
+    const rVar = options.rVar ?? options["r-var"] ?? DEFAULT_R_VAR_NAME;
     const prefix = options.prefix ?? "squircle";
     const radiusValues = theme("borderRadius");
 
     const amtCss = `var(${amtVar}, ${DEFAULT_AMT})`;
+    const rCss = `var(${rVar})`;
     const cornerShape = getCornerShape(amtVar);
 
     matchUtilities(
@@ -50,8 +57,8 @@ const squircle: ReturnType<typeof plugin.withOptions<SquirclePluginOptions>> =
             [name]: (value: string) => ({
               ...Object.fromEntries(props.map((p) => [p, value])),
               [SUPPORTS_RULE]: {
-                "--squircle-r": correctedRadius(value, amtCss),
-                ...Object.fromEntries(props.map((p) => [p, "var(--squircle-r)"])),
+                [rVar]: correctedRadius(value, amtCss),
+                ...Object.fromEntries(props.map((p) => [p, rCss])),
                 "corner-shape": cornerShape,
               },
             }),
