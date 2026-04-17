@@ -9,6 +9,7 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 ## Contents
 
 <!-- BEGIN:toc -->
+
 - [Requirements](#requirements)
 - [Install & setup](#install--setup)
 - [Utilities](#utilities)
@@ -354,6 +355,7 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-utils.css</code></strong> — the Tailwind utilities</summary>
 
 <!-- BEGIN:dist/tw-utils.css -->
+
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -513,6 +515,7 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
   }
 }
 ```
+
 <!-- END:dist/tw-utils.css -->
 
 </details>
@@ -521,7 +524,8 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-plugin.mjs</code></strong> — the JS plugin</summary>
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-```js
+
+````js
 import plugin from "tailwindcss/plugin";
 const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt";
 const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, 2)`;
