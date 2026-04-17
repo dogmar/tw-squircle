@@ -406,9 +406,11 @@ function usesIntermediateVar(suffix) {
 //#region src/tw-plugin.ts
 const squircle = plugin.withOptions((options = {}) => ({ matchUtilities, theme }) => {
 	const amtVar = options.amtVar ?? options["amt-var"] ?? "--squircle-amt";
+	const rVar = options.rVar ?? options["r-var"] ?? "--squircle-r";
 	const prefix = options.prefix ?? "squircle";
 	const radiusValues = theme("borderRadius");
 	const amtCss = `var(${amtVar}, 2)`;
+	const rCss = `var(${rVar})`;
 	const cornerShape = getCornerShape(amtVar);
 	matchUtilities({ [`${prefix}-amt`]: (value) => ({
 		[amtVar]: value,
@@ -419,8 +421,8 @@ const squircle = plugin.withOptions((options = {}) => ({ matchUtilities, theme }
 		if (usesIntermediateVar(suffix)) matchUtilities({ [name]: (value) => ({
 			...Object.fromEntries(props.map((p) => [p, value])),
 			[SUPPORTS_RULE]: {
-				"--squircle-r": correctedRadius(value, amtCss),
-				...Object.fromEntries(props.map((p) => [p, "var(--squircle-r)"])),
+				[rVar]: correctedRadius(value, amtCss),
+				...Object.fromEntries(props.map((p) => [p, rCss])),
 				"corner-shape": cornerShape
 			}
 		}) }, {
