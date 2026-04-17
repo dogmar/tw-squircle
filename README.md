@@ -1,10 +1,21 @@
 # @klinking/squircle
 
-Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius correction.
-
 [![npm version](https://img.shields.io/npm/v/@klinking/squircle.svg)](https://www.npmjs.com/package/@klinking/squircle)
 
+We're all excited about `corner-shape: squircle`, but we're in a pickle right now. Squircle corners look _better_ (natch), but at the same `border-radius`, they look _itty bitty_ compared to regular rounded corners. You're saying to yourself: "Who cares! I'll just crank up the border-radius until it look good and be done with it!" Then you see your site in Safari, and now your rounded corners are just _massive_. That's because Safari ain't supportin' no squircles yet. Now you gotta manually eyeball what border-radius kinda looks the same as the squircle and throw in an `@supports` rule and then your head explodes (why, head, why you explode?). Well… what if I told you you could eat your squircle and have your border-radius too? Read on, child.
+
 > **[Interactive Demo →](https://dogmar.github.io/squircle)**
+
+## Requirements
+
+- **Tailwind CSS v4+.** The CSS utilities use v4's `@utility` and `--value()` APIs. The JS plugin is API-compatible with v3 but only tested and declared against v4 — see [FAQ](#faq) if you want to try it on v3.
+- **Modern browsers** for the squircle shape itself. Unsupported browsers get a clean `border-radius` fallback that matches visual size of rounding; see [Browser support](#browser-support--fallback-strategy) for the feature-by-feature matrix.
+- **Optional:** [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) v2+ if your project already uses it (extra config below).
+- **Optional:** CSS `@function` support if you use the standalone [`squircle-radius()`](#css-function-squircle-radius) — experimental.
+
+<!-- Uncomment once the converter at squircle.klink.ing is live:
+- **"I just want to convert one little ol' border-radius to one squircle!"** Well, then just [go here](https://squircle.klink.ing).
+-->
 
 ## Install
 
