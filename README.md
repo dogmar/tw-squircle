@@ -187,6 +187,31 @@ If you installed via Path B, three options tune the emitted output:
 
 All three are exposed as kebab-case inside the `@plugin` block and as camelCase (`amtVar`, `rVar`) when requiring the plugin from JavaScript.
 
+## CSS function: `squircle-radius()`
+
+> ⚠️ **Experimental.** CSS `@function` is in [CSS Values 5](https://drafts.csswg.org/css-values-5/#custom-functions) and enabled behind a flag in recent Chrome. Check current support on [caniuse](https://caniuse.com/?search=%40function). For the same correction in today's browsers, use the Tailwind utilities — they expand to inline `calc()` that has been supported for years.
+
+For anything outside Tailwind — plain CSS, a Web Component, a design-tokens pipeline — the package also ships a CSS `@function` so you can compute the corrected radius declaratively:
+
+```css
+@import "@klinking/squircle/squircle-radius.css";
+
+.card {
+  --squircle-amt: 2;
+  border-radius: squircle-radius(1rem, var(--squircle-amt));
+  corner-shape: superellipse(var(--squircle-amt));
+}
+```
+
+Arguments:
+
+- `--radius` — the target `<length>` (what you'd have passed to `border-radius`)
+- `--squircle-amt` — the `K` value you're passing to `superellipse()`
+
+The parameters are deliberately untyped so relative units (`em`, `rem`, container queries, etc.) resolve at the call site, not at function-definition time — matching how CSS custom properties normally propagate.
+
+**Heads up:** this doesn't supply the uncorrected fallback for browsers that have `@function` but lack `corner-shape`. By the time `@function` support is widespread, `corner-shape` probably will be too, so ¯\\\_(ツ)\_/¯.
+
 ## Copy/Paste
 
 If you'd rather not add a dependency, copy the source directly:
