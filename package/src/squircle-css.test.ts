@@ -49,4 +49,61 @@ describe("squircle.css utilities", () => {
       expect(css).toMatchSnapshot();
     });
   }
+
+  describe("arbitrary values", () => {
+    it("squircle-[1rem] emits literal length in fallback and calc", async () => {
+      const css = await compileCss(["squircle-[1rem]"]);
+      expect(css).toContain("border-radius: 1rem");
+      expect(css).toContain("calc(1rem *");
+    });
+
+    it("squircle-[50%] is rejected (only [length] arbitraries allowed)", async () => {
+      const css = await compileCss(["squircle-[50%]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-(--my-radius) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compileCss(["squircle-(--my-radius)"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-[foo] is rejected", async () => {
+      const css = await compileCss(["squircle-[foo]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    for (const [suffix, props] of Object.entries(VARIANTS)) {
+      if (!suffix) continue;
+      const className = `squircle-${suffix}-[8px]`;
+      it(`${className} emits literal length on ${props.join(", ")}`, async () => {
+        const css = await compileCss([className]);
+        for (const prop of props) {
+          expect(css).toContain(`${prop}: 8px`);
+        }
+        expect(css).toContain("calc(8px *");
+      });
+    }
+
+    it("squircle-amt-[4.5] accepts arbitrary bare number", async () => {
+      const css = await compileCss(["squircle-amt-[4.5]"]);
+      expect(css).toContain("--squircle-amt: 4.5");
+      expect(css).toContain("corner-shape: superellipse(var(--squircle-amt))");
+    });
+
+    it("squircle-amt-[1em] is rejected (unit-bearing values are not numbers)", async () => {
+      const css = await compileCss(["squircle-amt-[1em]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-[foo] is rejected", async () => {
+      const css = await compileCss(["squircle-amt-[foo]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-(--my-amt) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compileCss(["squircle-amt-(--my-amt)"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+  });
+
 });

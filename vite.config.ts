@@ -17,7 +17,7 @@ export default defineConfig({
         dependsOn: ["fmt", "lint", "@klinking/squircle#test", "website#build"],
       },
       "sync-readme": {
-        command: "bash scripts/sync-readme.sh",
+        command: "bash scripts/sync-readme.sh && vp fmt README.md",
         dependsOn: ["@klinking/squircle#build"],
       },
     },

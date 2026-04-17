@@ -3,5 +3,13 @@
   "ignorePatterns": [],
   "sortTailwindcss": {
     "stylesheet": "./website/src/styles/global.css"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.md"],
+      "options": {
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
 }

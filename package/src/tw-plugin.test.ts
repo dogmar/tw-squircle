@@ -47,6 +47,44 @@ describe("plugin.ts utilities", () => {
       expect(css).toMatchSnapshot();
     });
   }
+
+  describe("arbitrary and invalid values", () => {
+    it("squircle-[1rem] emits literal length", async () => {
+      const css = await compilePlugin(["squircle-[1rem]"]);
+      expect(css).toContain("border-radius: 1rem");
+      expect(css).toContain("calc(1rem *");
+    });
+
+    it("squircle-[50%] is rejected (only lengths allowed)", async () => {
+      const css = await compilePlugin(["squircle-[50%]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-(--my-radius) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compilePlugin(["squircle-(--my-radius)"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-[foo] is rejected", async () => {
+      const css = await compilePlugin(["squircle-[foo]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-amt-[1em] is rejected (unit-bearing values are not numbers)", async () => {
+      const css = await compilePlugin(["squircle-amt-[1em]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-[foo] is rejected", async () => {
+      const css = await compilePlugin(["squircle-amt-[foo]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-(--my-amt) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compilePlugin(["squircle-amt-(--my-amt)"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+  });
 });
 
 describe("plugin.ts custom options", () => {
@@ -80,6 +118,27 @@ describe("plugin.ts custom options", () => {
     const css = await compilePlugin(["squircle-amt-[3]"], "amt-var: --se-amt;");
     expect(css).toContain("--se-amt: 3");
     expect(css).toContain("superellipse(var(--se-amt))");
+  });
+
+  it("custom r-var changes the intermediate CSS variable name", async () => {
+    const css = await compilePlugin(["squircle-md"], "r-var: --se-r;");
+    expect(css).toContain("--se-r: calc(");
+    expect(css).toContain("border-radius: var(--se-r)");
+    expect(css).not.toContain("--squircle-r");
+  });
+
+  it("custom r-var applies to multi-prop side variants", async () => {
+    const css = await compilePlugin(["squircle-t-md"], "r-var: --se-r;");
+    expect(css).toContain("--se-r: calc(");
+    expect(css).toContain("border-top-left-radius: var(--se-r)");
+    expect(css).toContain("border-top-right-radius: var(--se-r)");
+  });
+
+  it("single-prop corner variants don't emit the intermediate var at all", async () => {
+    const css = await compilePlugin(["squircle-tl-md"], "r-var: --se-r;");
+    expect(css).not.toContain("--se-r");
+    expect(css).not.toContain("--squircle-r");
+    expect(css).toContain("border-top-left-radius: calc(");
   });
 
   it("both options together", async () => {
