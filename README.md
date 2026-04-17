@@ -17,27 +17,47 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 - **"I just want to convert one little ol' border-radius to one squircle!"** Well, then just [go here](https://squircle.klink.ing).
 -->
 
-## Install
+## Install & setup
 
 ```bash
 npm install @klinking/squircle
 ```
 
-## Usage
+Then pick one of two integration paths. But don't pick wrong, else the Integration Ogre might… oh wait, no, just pick the one that suits your needs, they're essentially the same, but one allows more customization, in case my vars and classes conflict with ur existing vars and classes.
 
-**CSS import** (recommended):
+### Path A: CSS import (recommended)
 
 ```css
+@import "tailwindcss";
 @import "@klinking/squircle/tw-utils.css";
 ```
 
-**JS plugin** (alternative):
+That's it. All `squircle-*` classes are available. This path uses Tailwind v4's `@utility` directive, so everything is generated at build time with zero runtime cost.
+
+### Path B: JS plugin (for customization)
+
+Use this if you want to change the class prefix or the `--squircle-amt` CSS variable name:
 
 ```css
+@import "tailwindcss";
 @plugin "@klinking/squircle/tw-plugin";
 ```
 
-**tw-merge** (optional — if you use tailwind-merge):
+Or with options:
+
+```css
+@import "tailwindcss";
+@plugin "@klinking/squircle/tw-plugin" {
+  prefix: sq;          /* use `sq-md`, `sq-t-lg`, etc. */
+  amt-var: --my-amt;   /* use `--my-amt` instead of `--squircle-amt` */
+}
+```
+
+See [Configuring theme tokens](#configuring-theme-tokens) for what else you can customize.
+
+### tailwind-merge (optional)
+
+If your project already uses [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) to de-duplicate conflicting classes, pull in the squircle conflict config so `rounded-lg squircle-md` resolves the way you'd expect:
 
 ```js
 import { squircleMergeConfig } from "@klinking/squircle/tw-merge-cfg";
