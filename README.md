@@ -281,6 +281,44 @@ Both are first-class. The copy/paste block is right below, and it's honestly may
 - You use `tailwind-merge` and want the conflict config maintained for you.
 - You want the standalone [`squircle-radius()`](#css-function-squircle-radius) CSS function for non-Tailwind use.
 
+## FAQ
+
+### Does this work in Safari/Firefox/Chrome today?
+
+Partially, at time of writing — recent Chrome ships `corner-shape`, Safari and Firefox are still catching up. Check [caniuse](https://caniuse.com/?search=corner-shape) for the current state. Either way you're fine: in a browser without support, you get a plain `border-radius` at the pre-correction value, which visually matches `rounded-*`. No broken layouts, no visible fallback weirdness.
+
+### Does it work with Tailwind v3?
+
+The **CSS utilities** (`tw-utils.css`) are v4-only — they use `@utility` and `--value()`, which don't exist in v3.
+
+The **JS plugin** uses only APIs that exist in both v3 and v4 (`plugin.withOptions`, `matchUtilities`, `type: "length" | "number"`, `theme()`), so it's likely to work in v3 via a `tailwind.config.js`-style registration — but it's not currently tested or declared against v3. Tracked in [#26](https://github.com/dogmar/squircle/pull/26).
+
+### Why do my corners look smaller with `corner-shape: superellipse` without this?
+
+At the same `border-radius`, a squircle pokes further into the corner, so less of the box edge is rounded off. The fix is to scale the radius up so the visual roundness matches `rounded-*` — see [How the radius correction works](#how-the-radius-correction-works).
+
+### Does this add runtime JS?
+
+No. Everything is static CSS — the Tailwind utilities expand at build time into declarations with a native `calc()` the browser evaluates. The JS plugin also runs at build time only. Zero JS ships to the browser.
+
+### What happens once `corner-shape` is universal?
+
+Nothing you need to do. The correction lives inside `@supports (corner-shape: superellipse(2))`, so it activates exactly when the shape does. Once the browser ships support, the shape applies _and_ the compensated radius applies, at the same moment. Your layout is identical before and after.
+
+### Do I need `tailwind-merge`?
+
+Only if your project already uses it. The extra config (`squircleMergeConfig`) exists so `rounded-lg squircle-md` de-duplicates the way you'd expect — otherwise tailwind-merge doesn't know `squircle-*` and `rounded-*` occupy the same slot.
+
+### What's the difference between the utilities and the `squircle-radius()` function?
+
+The utilities expand to inline `calc()` at build time — they work in any browser that supports `calc()` + `pow()` (most current ones) and degrade to plain `border-radius` where `corner-shape` isn't supported.
+
+The `@function` form runs the same math at CSS runtime via CSS Values 5's `@function` — which is [experimental](https://caniuse.com/?search=%40function) (Chrome behind a flag, nothing else yet). Use the utilities unless you're specifically building for a non-Tailwind setup.
+
+### Can I use a different `squircle-amt` for each corner?
+
+No. `corner-shape` is declared once per element, so all four corners share the same K. You can still mix per-corner _radii_ (`squircle-tl-lg squircle-br-sm`), but the squircle-ness is uniform across the element.
+
 ## Copy/paste source
 
 If you'd rather not add a dependency, copy the source directly. Click to expand each file.
