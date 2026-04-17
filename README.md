@@ -91,35 +91,35 @@ See the [interactive demo](https://dogmar.github.io/squircle) for a visual expla
 | `squircle-r-*`   | `rounded-r-*`  | Right corners                     |
 | `squircle-b-*`   | `rounded-b-*`  | Bottom corners                    |
 | `squircle-l-*`   | `rounded-l-*`  | Left corners                      |
+| `squircle-s-*`   | `rounded-s-*`  | Inline-start corners (logical)    |
+| `squircle-e-*`   | `rounded-e-*`  | Inline-end corners (logical)      |
 | `squircle-tl-*`  | `rounded-tl-*` | Top-left corner                   |
 | `squircle-tr-*`  | `rounded-tr-*` | Top-right corner                  |
 | `squircle-br-*`  | `rounded-br-*` | Bottom-right corner               |
 | `squircle-bl-*`  | `rounded-bl-*` | Bottom-left corner                |
+| `squircle-ss-*`  | `rounded-ss-*` | Start-start corner (logical)      |
+| `squircle-se-*`  | `rounded-se-*` | Start-end corner (logical)        |
+| `squircle-es-*`  | `rounded-es-*` | End-start corner (logical)        |
+| `squircle-ee-*`  | `rounded-ee-*` | End-end corner (logical)          |
 | `squircle-amt-*` | —              | Superellipse exponent (default 2) |
 
-Accepted values are strict — typos fail loudly rather than producing invalid CSS:
+### What values are accepted?
 
-- `squircle-*` accepts the same theme values as `rounded-*` (`sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `full`) plus arbitrary lengths like `squircle-[16px]`. Non-length arbitraries (`[50%]`, `[foo]`) and paren refs (`squircle-(--my-radius)`) are rejected.
-- `squircle-amt-*` accepts bare numbers (`squircle-amt-2`), arbitrary numbers (`squircle-amt-[3.5]`), and theme values. Unit-bearing values (`[1em]`) and paren refs (`(--my-amt)`) are rejected. Higher values = more square.
+Values are validated strictly so typos fail at build time instead of producing invalid CSS:
 
-### Referencing a CSS variable
+- **`squircle-*` and its variants** accept the same theme values as `rounded-*` (`sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `full`, plus anything you add to `@theme`) and arbitrary lengths like `squircle-[16px]`. Non-length arbitraries (`[50%]`, `[foo]`) and paren refs (`squircle-(--my-radius)`) are rejected — use a theme key instead (see [Configuring theme tokens](#configuring-theme-tokens)).
+- **`squircle-amt-*`** accepts bare numbers (`squircle-amt-2`), arbitrary numbers (`squircle-amt-[3.5]`), and theme values. Unit-bearing arbitraries (`[1em]`) and paren refs (`(--my-amt)`) are rejected.
 
-Paren refs like `squircle-(--my-radius)` or `squircle-amt-(--my-amt)` are intentionally rejected, because Tailwind can't distinguish them from unit-typo brackets like `squircle-amt-[1em]` at the hint level — allowing one means allowing the other. Instead, thread the var through a theme key:
+### What does `squircle-amt-*` control?
 
-```css
-@theme {
-  --radius-hero: var(--hero-radius);
-  --squircle-amt-hero: var(--hero-squircle-amt);
-}
-```
+The value is the `K` parameter passed to `superellipse(K)`, which controls how square the corner shape is:
 
-Then use the theme key as a bare suffix:
+- **2** — the classic squircle (this package's default), same as the `squircle` keyword. Values greater than 2 get more and more square as they increase, becoming visually indistinguishable from a perfect square around 10 or higher.
+- **1** — ordinary ellipse (same as the `round` keyword)
+- **0** — straight bevel (same as the `bevel` keyword)
+- **Negative values** — concave "scooped out" corners (`-1` = `scoop`, `-∞` = `notch`)
 
-```html
-<div class="squircle-hero squircle-amt-hero">…</div>
-```
-
-Tailwind resolves `squircle-hero` / `squircle-amt-hero` via the theme, which in turn reads your underlying vars — giving the indirection a paren ref would have provided, while still rejecting typos.
+See the [MDN reference for `superellipse()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/superellipse) for the full spec.
 
 ## Copy/Paste
 
