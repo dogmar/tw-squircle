@@ -23,9 +23,13 @@ export default defineConfig({
         command: "vp test run squircle-css",
         dependsOn: ["build"],
       },
+      "test:radius": {
+        command: "vp test run squircle-radius",
+        dependsOn: ["build"],
+      },
       test: {
         command: "echo 'All tests passed'",
-        dependsOn: ["test:plugin", "test:css"],
+        dependsOn: ["test:plugin", "test:css", "test:radius"],
       },
       build: {
         command: "vp pack && tsx scripts/generate-squircle-css.ts",

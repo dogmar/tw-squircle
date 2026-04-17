@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -82,3 +82,8 @@ mkdirSync(distDir, { recursive: true });
 const outPath = join(distDir, "tw-utils.css");
 writeFileSync(outPath, output);
 console.log(`Generated ${outPath} (skipping fmt)`);
+
+const radiusSrc = join(__dirname, "..", "src", "squircle-radius.css");
+const radiusDest = join(distDir, "squircle-radius.css");
+copyFileSync(radiusSrc, radiusDest);
+console.log(`Copied ${radiusDest}`);
