@@ -191,7 +191,7 @@ All three are exposed as kebab-case inside the `@plugin` block and as camelCase 
 
 > ⚠️ **Experimental.** CSS `@function` is in [CSS Values 5](https://drafts.csswg.org/css-values-5/#custom-functions) and enabled behind a flag in recent Chrome. Check current support on [caniuse](https://caniuse.com/?search=%40function). For the same correction in today's browsers, use the Tailwind utilities — they expand to inline `calc()` that has been supported for years.
 
-For anything outside Tailwind — plain CSS, a Web Component, a design-tokens pipeline — the package also ships a CSS `@function` so you can compute the corrected radius declaratively:
+For the footure. Less total CSS than all those tailwind utilities. So beautiful. So utterly currently unusable.
 
 ```css
 @import "@klinking/squircle/squircle-radius.css";
