@@ -229,11 +229,9 @@ So `.squircle-md` compiles to roughly:
 
 The browser does the actual `calc()` at render time using native [`pow()` and `calc()`](https://caniuse.com/?search=pow) — there's no build-time float math in the emitted CSS.
 
-### Why both branches end up looking the same
+The adjusted radius is wrapped in a `@supports (corner-shape: superellipse(2))` rule, so browsers without support simply use the original `border-radius` unchanged. This means your corners will look visually consistent regardless of browser — no sudden changes when support lands, no broken fallbacks. Since browser support for `corner-shape` is still not universal, this gives you consistent visual border-radius forever.
 
-The corrected radius is tucked inside a `@supports (corner-shape: superellipse(2))` block — CSS-speak for "only run this on browsers that actually know what a squircle is." Everyone else reads that block, says "huh, weird," and skips it, falling back to the plain `border-radius` declaration above — which, thanks to this whole correction song and dance, visually matches what the squircle _would've_ looked like. No visual pop when your browser finally catches up. No broken fallbacks. Same-looking corners, today, tomorrow, forever. Amen.
-
-See the [interactive demo](https://dogmar.github.io/squircle) for the visual version.
+See the [interactive demo](https://dogmar.github.io/squircle) for a visual explanation.
 
 ## Copy/Paste
 
