@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,7 +12,10 @@ import {
 } from "../src/variants";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const value = "--value([--radius-*])";
+
+// Support arbitrary, bare, and theme values in one --value() call.
+// https://tailwindcss.com/docs/adding-custom-styles#functional-utilities
+const value = "--value(--radius-*, [length])";
 const formula = correctedRadius(value);
 
 function multiPropUtility(name: string, props: string[]) {
@@ -50,7 +52,7 @@ function generateCss(): string {
 /* squircle-* mirrors rounded-* variants: all, t, r, b, l, s, e, tl, tr, br, bl, ss, se, es, ee */
 
 @utility squircle-amt-* {
-  --squircle-amt: --value([--squircle-amt-*], number);
+  --squircle-amt: --value(--squircle-amt-*, number, [number]);
   ${SUPPORTS_RULE} {
     corner-shape: superellipse(var(--squircle-amt));
   }
@@ -79,5 +81,4 @@ const distDir = join(__dirname, "..", "dist");
 mkdirSync(distDir, { recursive: true });
 const outPath = join(distDir, "tw-utils.css");
 writeFileSync(outPath, output);
-execFileSync("npx", ["vp", "fmt", outPath], { stdio: "inherit" });
-console.log(`Generated ${outPath}`);
+console.log(`Generated ${outPath} (skipping fmt)`);

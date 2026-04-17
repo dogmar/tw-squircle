@@ -47,6 +47,44 @@ describe("plugin.ts utilities", () => {
       expect(css).toMatchSnapshot();
     });
   }
+
+  describe("arbitrary and invalid values", () => {
+    it("squircle-[1rem] emits literal length", async () => {
+      const css = await compilePlugin(["squircle-[1rem]"]);
+      expect(css).toContain("border-radius: 1rem");
+      expect(css).toContain("calc(1rem *");
+    });
+
+    it("squircle-[50%] is rejected (only lengths allowed)", async () => {
+      const css = await compilePlugin(["squircle-[50%]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-(--my-radius) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compilePlugin(["squircle-(--my-radius)"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-[foo] is rejected", async () => {
+      const css = await compilePlugin(["squircle-[foo]"]);
+      expect(css).not.toContain(".squircle-");
+    });
+
+    it("squircle-amt-[1em] is rejected (unit-bearing values are not numbers)", async () => {
+      const css = await compilePlugin(["squircle-amt-[1em]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-[foo] is rejected", async () => {
+      const css = await compilePlugin(["squircle-amt-[foo]"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+
+    it("squircle-amt-(--my-amt) is rejected (use a theme value to reference a var)", async () => {
+      const css = await compilePlugin(["squircle-amt-(--my-amt)"]);
+      expect(css).not.toContain("squircle-amt-");
+    });
+  });
 });
 
 describe("plugin.ts custom options", () => {
