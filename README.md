@@ -252,7 +252,7 @@ The Tailwind utilities depend on rows 1–4 and row 6. Only `corner-shape` itsel
 
 The corrected radius is wrapped in `@supports (corner-shape: superellipse(2))`, so browsers that don't know about `corner-shape` skip the entire block and fall back to the plain `border-radius` declaration above — no `corner-shape`, no squircle, just a regular rounded corner at your original theme radius. Ship `squircle-*` today without worrying about Safari: unsupported browsers show `rounded-*`-equivalent corners now, and the squircle shape lights up automatically when support lands, without any visual jump in the already-shipped radius.
 
-## Why "squircle"?
+## Why it called "squircle" when it use "superellipse()"?
 
 Cuz ain't no one, not even a clanker want to type supperlips over and over again. See? I couldn't even type it _once_ without mussin' it up.
 
