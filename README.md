@@ -115,7 +115,7 @@ Values are validated strictly so typos fail at build time instead of producing i
 The value is the `K` parameter passed to `superellipse(K)`, which controls how square the corner shape is:
 
 - **2** — the classic squircle (this package's default), same as the `squircle` keyword. Values greater than 2 get more and more square as they increase, becoming visually indistinguishable from a perfect square around 10 or higher.
-- **1** — ordinary ellipse (same as the `round` keyword)
+- **1** — ordinary ellipse (same as the `round` keyword). The _classic_. Just like standard `border-radius`, no squircling at all. Why are you even here?
 - **0** — straight bevel (same as the `bevel` keyword)
 - **Negative values** — concave "scooped out" corners (`-1` = `scoop`, `-∞` = `notch`)
 
