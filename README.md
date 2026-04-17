@@ -97,6 +97,7 @@ If you'd rather not add a dependency, copy the source directly:
 ### tw-utils.css
 
 <!-- BEGIN:dist/tw-utils.css -->
+
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -256,12 +257,14 @@ If you'd rather not add a dependency, copy the source directly:
   }
 }
 ```
+
 <!-- END:dist/tw-utils.css -->
 
 ### tw-plugin.js
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-```js
+
+````js
 import plugin from "tailwindcss/plugin";
 const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt";
 const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, 2)`;
