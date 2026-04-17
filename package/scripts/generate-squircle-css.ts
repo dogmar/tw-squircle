@@ -50,7 +50,7 @@ function generateCss(): string {
 /* squircle-* mirrors rounded-* variants: all, t, r, b, l, s, e, tl, tr, br, bl, ss, se, es, ee */
 
 @utility squircle-amt-* {
-  --squircle-amt: --value(--squircle-amt-*, number);
+  --squircle-amt: --value([--squircle-amt-*], number);
   ${SUPPORTS_RULE} {
     corner-shape: superellipse(var(--squircle-amt));
   }
