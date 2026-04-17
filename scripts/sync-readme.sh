@@ -37,8 +37,47 @@ sync_file() {
   rm -f "$REPO_ROOT/.sync-block.tmp"
 }
 
+sync_toc() {
+  local readme="$REPO_ROOT/README.md"
+  local tmp="$REPO_ROOT/README.md.tmp"
+  local tocfile="$REPO_ROOT/.sync-toc.tmp"
+  local begin="<!-- BEGIN:toc -->"
+  local end="<!-- END:toc -->"
+
+  # Generate a bulleted TOC from top-level (##) headings, skipping the
+  # "Contents" heading itself. Anchor rules match GitHub's slugger:
+  # lowercase, strip non-alphanumeric (except spaces and hyphens), spaces → hyphens.
+  awk '
+    /^## / {
+      heading = substr($0, 4)
+      if (heading == "Contents") next
+      anchor = tolower(heading)
+      gsub(/[^a-z0-9 -]/, "", anchor)
+      gsub(/ /, "-", anchor)
+      print "- [" heading "](#" anchor ")"
+    }
+  ' "$readme" > "$tocfile"
+
+  awk -v begin="$begin" -v end="$end" -v blockfile="$tocfile" '
+    $0 == begin {
+      print
+      while ((getline line < blockfile) > 0) print line
+      close(blockfile)
+      skip = 1
+      next
+    }
+    $0 == end { print; skip = 0; next }
+    skip { next }
+    { print }
+  ' "$readme" > "$tmp"
+
+  mv "$tmp" "$readme"
+  rm -f "$tocfile"
+}
+
 sync_file "dist/tw-utils.css" "css" "package/dist/tw-utils.css"
 sync_file "dist/tw-merge-cfg.mjs" "js" "package/dist/tw-merge-cfg.mjs"
 sync_file "dist/tw-plugin.mjs" "js" "package/dist/tw-plugin.mjs"
+sync_toc
 
 echo "README synced."

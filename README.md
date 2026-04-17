@@ -6,6 +6,25 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 
 > **[Interactive Demo →](https://dogmar.github.io/squircle)**
 
+## Contents
+
+<!-- BEGIN:toc -->
+- [Requirements](#requirements)
+- [Install & setup](#install--setup)
+- [Utilities](#utilities)
+- [Configuring theme tokens](#configuring-theme-tokens)
+- [CSS function: `squircle-radius()`](#css-function-squircle-radius)
+- [How the radius correction works](#how-the-radius-correction-works)
+- [Browser support & fallback strategy](#browser-support--fallback-strategy)
+- [Why it called "squircle" when it use "superellipse()"?](#why-it-called-squircle-when-it-use-superellipse)
+- [Alternatives considered](#alternatives-considered)
+- [Should you install or copy/paste?](#should-you-install-or-copypaste)
+- [FAQ](#faq)
+- [Copy/paste source](#copypaste-source)
+- [Prior art & credits](#prior-art--credits)
+- [License](#license)
+<!-- END:toc -->
+
 ## Requirements
 
 - **Tailwind CSS v4+.** The CSS utilities use v4's `@utility` and `--value()` APIs. The JS plugin is API-compatible with v3 but only tested and declared against v4 — see [FAQ](#faq) if you want to try it on v3.
@@ -319,6 +338,14 @@ The `@function` form runs the same math at CSS runtime via CSS Values 5's `@func
 
 No. `corner-shape` is declared once per element, so all four corners share the same K. You can still mix per-corner _radii_ (`squircle-tl-lg squircle-br-sm`), but the squircle-ness is uniform across the element.
 
+### Why is the tone of this README all over the place?
+
+Because I made Claude write most of it, got mad at claude, re-wrote a lot of stuff myself, then got tired and let Claude win.
+
+### Did you just let Claude write this?
+
+Kinda. Honestly I wrote the basic tailwind utilities by hand using a weird cobbled together formula I just kinda eyeballed to work for most values anyone would actually want to use for the `superellipse()` param. But then I thought, hey, robots are good at math, maybe they can make the formula _actually_ **correct**. And they could! The robots _could_ make a right formula. I was so happy. I cried tears of joy for days and days. So many tears I drowned my robot. And now I'll never code again. Alas.
+
 ## Copy/paste source
 
 If you'd rather not add a dependency, copy the source directly. Click to expand each file.
@@ -327,7 +354,6 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-utils.css</code></strong> — the Tailwind utilities</summary>
 
 <!-- BEGIN:dist/tw-utils.css -->
-
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -487,7 +513,6 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
   }
 }
 ```
-
 <!-- END:dist/tw-utils.css -->
 
 </details>
@@ -496,8 +521,7 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-plugin.mjs</code></strong> — the JS plugin</summary>
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-
-````js
+```js
 import plugin from "tailwindcss/plugin";
 const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt";
 const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, 2)`;
@@ -645,6 +669,12 @@ export { squircleMergeConfig };
 <!-- END:dist/tw-merge-cfg.mjs -->
 
 </details>
+
+## Prior art & credits
+
+- **CSS Backgrounds 4** — the [`corner-shape` spec](https://drafts.csswg.org/css-backgrounds-4/#corner-shape-value) defines the `superellipse()` family of corner curves and their maths.
+- **MDN** — the [`superellipse()` reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/superellipse) has the clearest plain-language walkthrough of what K values produce.
+- **Tailwind CSS v4** — the `@utility` / `--value()` API this package is built on.
 
 ## License
 
