@@ -10,6 +10,7 @@ export default defineConfig({
     entry: {
       "tw-plugin": "./src/tw-plugin.ts",
       "tw-merge-cfg": "./src/tw-merge-cfg.ts",
+      "panda-preset": "./src/panda-preset.ts",
     },
     format: "esm",
     dts: true,
@@ -27,9 +28,12 @@ export default defineConfig({
         command: "vp test run squircle-radius",
         dependsOn: ["build"],
       },
+      "test:panda": {
+        command: "vp test run panda-preset",
+      },
       test: {
         command: "echo 'All tests passed'",
-        dependsOn: ["test:plugin", "test:css", "test:radius"],
+        dependsOn: ["test:plugin", "test:css", "test:radius", "test:panda"],
       },
       build: {
         command: "vp pack && tsx scripts/generate-squircle-css.ts",
