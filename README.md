@@ -9,6 +9,7 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 ## Contents
 
 <!-- BEGIN:toc -->
+
 - [Requirements](#requirements)
 - [Install & setup](#install--setup)
 - [Utilities](#utilities)
@@ -110,24 +111,24 @@ Then use the utilities anywhere `css(...)` accepts properties:
 
 The naming follows Panda's own border-radius convention exactly — substitute `border` ↔ `squircle` and `rounded` ↔ `squircle` (the shorthand) and the table is identical to Panda's:
 
-| Full property name              | Shorthand              | CSS targets                              |
-| ------------------------------- | ---------------------- | ---------------------------------------- |
-| `squircleRadius`                | `squircle`             | `border-radius` (all four corners)       |
-| `squircleTopRadius`             | `squircleTop`          | top corners                              |
-| `squircleRightRadius`           | `squircleRight`        | right corners                            |
-| `squircleBottomRadius`          | `squircleBottom`       | bottom corners                           |
-| `squircleLeftRadius`            | `squircleLeft`         | left corners                             |
-| `squircleStartRadius`           | `squircleStart`        | inline-start corners (logical)           |
-| `squircleEndRadius`             | `squircleEnd`          | inline-end corners (logical)             |
-| `squircleTopLeftRadius`         | `squircleTopLeft`      | top-left corner                          |
-| `squircleTopRightRadius`        | `squircleTopRight`     | top-right corner                         |
-| `squircleBottomRightRadius`     | `squircleBottomRight`  | bottom-right corner                      |
-| `squircleBottomLeftRadius`      | `squircleBottomLeft`   | bottom-left corner                       |
-| `squircleStartStartRadius`      | `squircleStartStart`   | start-start corner (logical)             |
-| `squircleStartEndRadius`        | `squircleStartEnd`     | start-end corner (logical)               |
-| `squircleEndStartRadius`        | `squircleEndStart`     | end-start corner (logical)               |
-| `squircleEndEndRadius`          | `squircleEndEnd`       | end-end corner (logical)                 |
-| `squircleAmount`                | `squircleAmt`          | superellipse exponent (default 2)        |
+| Full property name          | Shorthand             | CSS targets                        |
+| --------------------------- | --------------------- | ---------------------------------- |
+| `squircleRadius`            | `squircle`            | `border-radius` (all four corners) |
+| `squircleTopRadius`         | `squircleTop`         | top corners                        |
+| `squircleRightRadius`       | `squircleRight`       | right corners                      |
+| `squircleBottomRadius`      | `squircleBottom`      | bottom corners                     |
+| `squircleLeftRadius`        | `squircleLeft`        | left corners                       |
+| `squircleStartRadius`       | `squircleStart`       | inline-start corners (logical)     |
+| `squircleEndRadius`         | `squircleEnd`         | inline-end corners (logical)       |
+| `squircleTopLeftRadius`     | `squircleTopLeft`     | top-left corner                    |
+| `squircleTopRightRadius`    | `squircleTopRight`    | top-right corner                   |
+| `squircleBottomRightRadius` | `squircleBottomRight` | bottom-right corner                |
+| `squircleBottomLeftRadius`  | `squircleBottomLeft`  | bottom-left corner                 |
+| `squircleStartStartRadius`  | `squircleStartStart`  | start-start corner (logical)       |
+| `squircleStartEndRadius`    | `squircleStartEnd`    | start-end corner (logical)         |
+| `squircleEndStartRadius`    | `squircleEndStart`    | end-start corner (logical)         |
+| `squircleEndEndRadius`      | `squircleEndEnd`      | end-end corner (logical)           |
+| `squircleAmount`            | `squircleAmt`         | superellipse exponent (default 2)  |
 
 All radius utilities resolve through your `radii` theme tokens, so `squircle: "md"` reads the same `--radii-md` your `borderRadius: "md"` does. The preset also registers a `_squircleSupported` condition (`@supports (corner-shape: superellipse(2))`) for one-off overrides.
 
@@ -406,6 +407,7 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-utils.css</code></strong> — the Tailwind utilities</summary>
 
 <!-- BEGIN:dist/tw-utils.css -->
+
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -565,6 +567,7 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
   }
 }
 ```
+
 <!-- END:dist/tw-utils.css -->
 
 </details>
@@ -573,8 +576,9 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-plugin.mjs</code></strong> — the JS plugin</summary>
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-```js
-import { c as variantEntries, i as SUPPORTS_RULE, s as squircleCssObj } from "./variants-vQRRK8yy.mjs";
+
+````js
+import { a as squircleCssObj, i as SUPPORTS_RULE, o as variantEntries } from "./variants-CUhqvLRq.mjs";
 import plugin from "tailwindcss/plugin";
 //#region src/tw-plugin.ts
 const squircle = plugin.withOptions((options = {}) => ({ matchUtilities, theme }) => {
