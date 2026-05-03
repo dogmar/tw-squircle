@@ -1,12 +1,9 @@
 import plugin from "tailwindcss/plugin";
 import {
-  DEFAULT_AMT,
   DEFAULT_AMOUNT_VAR_NAME,
   DEFAULT_R_VAR_NAME,
   SUPPORTS_RULE,
-  correctedRadius,
-  getCornerShape,
-  usesIntermediateVar,
+  squircleCssObj,
   variantEntries,
 } from "./variants";
 
@@ -27,63 +24,36 @@ const squircle: ReturnType<typeof plugin.withOptions<SquirclePluginOptions>> =
   plugin.withOptions<SquirclePluginOptions>((options = {}) =>
     // eslint-disable-next-line @typescript-eslint/unbound-method
     ({ matchUtilities, theme }) => {
-    const amtVar = options.amtVar ?? options["amt-var"] ?? DEFAULT_AMOUNT_VAR_NAME;
-    const rVar = options.rVar ?? options["r-var"] ?? DEFAULT_R_VAR_NAME;
-    const prefix = options.prefix ?? "squircle";
-    const radiusValues = theme("borderRadius");
+      const amtVar = options.amtVar ?? options["amt-var"] ?? DEFAULT_AMOUNT_VAR_NAME;
+      const rVar = options.rVar ?? options["r-var"] ?? DEFAULT_R_VAR_NAME;
+      const prefix = options.prefix ?? "squircle";
+      const radiusValues = theme("borderRadius");
 
-    const amtCss = `var(${amtVar}, ${DEFAULT_AMT})`;
-    const rCss = `var(${rVar})`;
-    const cornerShape = getCornerShape(amtVar);
-
-    matchUtilities(
-      {
-        [`${prefix}-amt`]: (value: string) => ({
-          [amtVar]: value,
-          [SUPPORTS_RULE]: {
-            "corner-shape": `superellipse(var(${amtVar}))`,
-          },
-        }),
-      },
-      { type: "number" },
-    );
-
-    for (const [suffix, props] of variantEntries()) {
-      const name = suffix ? `${prefix}-${suffix}` : prefix;
-
-      if (usesIntermediateVar(suffix)) {
-        matchUtilities(
-          {
-            [name]: (value: string) => ({
-              ...Object.fromEntries(props.map((p) => [p, value])),
-              [SUPPORTS_RULE]: {
-                [rVar]: correctedRadius(value, amtCss),
-                ...Object.fromEntries(props.map((p) => [p, rCss])),
-                "corner-shape": cornerShape,
-              },
-            }),
-          },
-          { type: "length", values: radiusValues },
-        );
-      } else {
-        const prop = props[0]!;
-        matchUtilities(
-          {
-            [name]: (value: string) => {
-              const result: Record<string, string | Record<string, string>> = {
-                [prop]: value,
-              };
-              result[SUPPORTS_RULE] = {
-                [prop]: correctedRadius(value, amtCss),
-                "corner-shape": cornerShape,
-              };
-              return result;
+      matchUtilities(
+        {
+          [`${prefix}-amt`]: (value: string) => ({
+            [amtVar]: value,
+            [SUPPORTS_RULE]: {
+              "corner-shape": `superellipse(var(${amtVar}))`,
             },
+          }),
+        },
+        { type: "number" },
+      );
+
+      for (const [suffix, props] of variantEntries()) {
+        const name = suffix ? `${prefix}-${suffix}` : prefix;
+        matchUtilities(
+          {
+            [name]: (value: string) =>
+              squircleCssObj(props, value, { amtVar, rVar }) as Record<
+                string,
+                string | Record<string, string>
+              >,
           },
           { type: "length", values: radiusValues },
         );
       }
-    }
-  });
+    });
 
 export default squircle;

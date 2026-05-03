@@ -9,7 +9,6 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 ## Contents
 
 <!-- BEGIN:toc -->
-
 - [Requirements](#requirements)
 - [Install & setup](#install--setup)
 - [Utilities](#utilities)
@@ -43,7 +42,7 @@ We're all excited about `corner-shape: squircle`, but we're in a pickle right no
 npm install @klinking/squircle
 ```
 
-Then pick one of two integration paths. But don't pick wrong, else the Integration Ogre might… oh wait, no, just pick the one that suits your needs, they're essentially the same, but one allows more customization, in case my vars and classes conflict with ur existing vars and classes.
+Then pick the integration path that fits your project. Tailwind is the original target (paths A and B). Path C is the [Panda CSS](https://panda-css.com/) preset, which produces the exact same `@supports`-gated visual correction wired through Panda's utility pipeline.
 
 ### Path A: CSS import (recommended)
 
@@ -87,6 +86,58 @@ const twMerge = extendTailwindMerge(squircleMergeConfig, {
   // your other customizations
 });
 ```
+
+### Path C: Panda CSS preset
+
+For [Panda CSS](https://panda-css.com/) projects, register the preset in `panda.config.ts`:
+
+```ts
+import { defineConfig } from "@pandacss/dev";
+import squirclePreset from "@klinking/squircle/panda-preset";
+
+export default defineConfig({
+  presets: ["@pandacss/dev/presets", squirclePreset()],
+  // ...
+});
+```
+
+Then use the utilities anywhere `css(...)` accepts properties:
+
+```tsx
+<div className={css({ squircle: "md", padding: "4" })} />
+<div className={css({ squircleTopLeft: "lg", squircleAmt: 3 })} />
+```
+
+The naming follows Panda's own border-radius convention exactly — substitute `border` ↔ `squircle` and `rounded` ↔ `squircle` (the shorthand) and the table is identical to Panda's:
+
+| Full property name              | Shorthand              | CSS targets                              |
+| ------------------------------- | ---------------------- | ---------------------------------------- |
+| `squircleRadius`                | `squircle`             | `border-radius` (all four corners)       |
+| `squircleTopRadius`             | `squircleTop`          | top corners                              |
+| `squircleRightRadius`           | `squircleRight`        | right corners                            |
+| `squircleBottomRadius`          | `squircleBottom`       | bottom corners                           |
+| `squircleLeftRadius`            | `squircleLeft`         | left corners                             |
+| `squircleStartRadius`           | `squircleStart`        | inline-start corners (logical)           |
+| `squircleEndRadius`             | `squircleEnd`          | inline-end corners (logical)             |
+| `squircleTopLeftRadius`         | `squircleTopLeft`      | top-left corner                          |
+| `squircleTopRightRadius`        | `squircleTopRight`     | top-right corner                         |
+| `squircleBottomRightRadius`     | `squircleBottomRight`  | bottom-right corner                      |
+| `squircleBottomLeftRadius`      | `squircleBottomLeft`   | bottom-left corner                       |
+| `squircleStartStartRadius`      | `squircleStartStart`   | start-start corner (logical)             |
+| `squircleStartEndRadius`        | `squircleStartEnd`     | start-end corner (logical)               |
+| `squircleEndStartRadius`        | `squircleEndStart`     | end-start corner (logical)               |
+| `squircleEndEndRadius`          | `squircleEndEnd`       | end-end corner (logical)                 |
+| `squircleAmount`                | `squircleAmt`          | superellipse exponent (default 2)        |
+
+All radius utilities resolve through your `radii` theme tokens, so `squircle: "md"` reads the same `--radii-md` your `borderRadius: "md"` does. The preset also registers a `_squircleSupported` condition (`@supports (corner-shape: superellipse(2))`) for one-off overrides.
+
+The preset accepts the same `amtVar` / `rVar` options as the Tailwind plugin if you need to rename the underlying CSS variables:
+
+```ts
+squirclePreset({ amtVar: "--my-amt", rVar: "--my-r" });
+```
+
+Panda is usage-driven — utilities only appear in the output for properties found in scanned source. If you want every variant emitted unconditionally, opt in via Panda's [`staticCss`](https://panda-css.com/docs/guides/static-css).
 
 ## Utilities
 
@@ -355,7 +406,6 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-utils.css</code></strong> — the Tailwind utilities</summary>
 
 <!-- BEGIN:dist/tw-utils.css -->
-
 ```css
 /* ── Squircle utilities ─────────────────────────────────────── */
 /* squircle-amt-[n] sets the superellipse amount (default 2)    */
@@ -515,7 +565,6 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
   }
 }
 ```
-
 <!-- END:dist/tw-utils.css -->
 
 </details>
@@ -524,90 +573,26 @@ If you'd rather not add a dependency, copy the source directly. Click to expand 
 <summary><strong><code>tw-plugin.mjs</code></strong> — the JS plugin</summary>
 
 <!-- BEGIN:dist/tw-plugin.mjs -->
-
-````js
+```js
+import { c as variantEntries, i as SUPPORTS_RULE, s as squircleCssObj } from "./variants-vQRRK8yy.mjs";
 import plugin from "tailwindcss/plugin";
-const DEFAULT_AMOUNT_VAR_NAME = "--squircle-amt";
-const DEFAULT_AMT_CSS = `var(${DEFAULT_AMOUNT_VAR_NAME}, 2)`;
-const getCornerShape = (varName = DEFAULT_AMOUNT_VAR_NAME) => `superellipse(var(${varName}, 2))`;
-function correctedRadius(radius, amt = DEFAULT_AMT_CSS) {
-	return `calc(${radius} * (1 - pow(2, -0.5)) / (1 - pow(2, -1 * pow(2, -1 * ${amt}))))`;
-}
-function isComment(entry) {
-	return !Array.isArray(entry);
-}
-const SUPPORTS_RULE = "@supports (corner-shape: superellipse(2))";
-const VARIANTS = {
-	"": ["border-radius"],
-	"$comment-physical-sides": { comment: "/* --- Per-side physical variants --- */" },
-	t: ["border-top-left-radius", "border-top-right-radius"],
-	r: ["border-top-right-radius", "border-bottom-right-radius"],
-	b: ["border-bottom-left-radius", "border-bottom-right-radius"],
-	l: ["border-top-left-radius", "border-bottom-left-radius"],
-	"$comment-logical-sides": { comment: "/* --- Per-side logical variants --- */" },
-	s: ["border-start-start-radius", "border-end-start-radius"],
-	e: ["border-start-end-radius", "border-end-end-radius"],
-	"$comment-physical-corners": { comment: "/* --- Per-corner physical variants --- */" },
-	tl: ["border-top-left-radius"],
-	tr: ["border-top-right-radius"],
-	br: ["border-bottom-right-radius"],
-	bl: ["border-bottom-left-radius"],
-	"$comment-logical-corners": { comment: "/* --- Per-corner logical variants --- */" },
-	ss: ["border-start-start-radius"],
-	se: ["border-start-end-radius"],
-	es: ["border-end-start-radius"],
-	ee: ["border-end-end-radius"]
-};
-function variantEntries() {
-	return Object.entries(VARIANTS).filter((entry) => !isComment(entry[1]));
-}
-function usesIntermediateVar(suffix) {
-	const entry = VARIANTS[suffix];
-	if (!entry || isComment(entry)) return false;
-	return suffix === "" || entry.length > 1;
-}
-//#endregion
 //#region src/tw-plugin.ts
 const squircle = plugin.withOptions((options = {}) => ({ matchUtilities, theme }) => {
 	const amtVar = options.amtVar ?? options["amt-var"] ?? "--squircle-amt";
 	const rVar = options.rVar ?? options["r-var"] ?? "--squircle-r";
 	const prefix = options.prefix ?? "squircle";
 	const radiusValues = theme("borderRadius");
-	const amtCss = `var(${amtVar}, 2)`;
-	const rCss = `var(${rVar})`;
-	const cornerShape = getCornerShape(amtVar);
 	matchUtilities({ [`${prefix}-amt`]: (value) => ({
 		[amtVar]: value,
 		[SUPPORTS_RULE]: { "corner-shape": `superellipse(var(${amtVar}))` }
 	}) }, { type: "number" });
-	for (const [suffix, props] of variantEntries()) {
-		const name = suffix ? `${prefix}-${suffix}` : prefix;
-		if (usesIntermediateVar(suffix)) matchUtilities({ [name]: (value) => ({
-			...Object.fromEntries(props.map((p) => [p, value])),
-			[SUPPORTS_RULE]: {
-				[rVar]: correctedRadius(value, amtCss),
-				...Object.fromEntries(props.map((p) => [p, rCss])),
-				"corner-shape": cornerShape
-			}
-		}) }, {
-			type: "length",
-			values: radiusValues
-		});
-		else {
-			const prop = props[0];
-			matchUtilities({ [name]: (value) => {
-				const result = { [prop]: value };
-				result[SUPPORTS_RULE] = {
-					[prop]: correctedRadius(value, amtCss),
-					"corner-shape": cornerShape
-				};
-				return result;
-			} }, {
-				type: "length",
-				values: radiusValues
-			});
-		}
-	}
+	for (const [suffix, props] of variantEntries()) matchUtilities({ [suffix ? `${prefix}-${suffix}` : prefix]: (value) => squircleCssObj(props, value, {
+		amtVar,
+		rVar
+	}) }, {
+		type: "length",
+		values: radiusValues
+	});
 });
 //#endregion
 export { squircle as default };
